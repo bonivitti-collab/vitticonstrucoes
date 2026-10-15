@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" fill="none">
+  <rect width="960" height="400" fill="#FFFFFF"/>
+  <!-- Architectural V Mark with Left Roof Cantilever -->
+  <path d="M296 206L475 94L516 116L612 336L686 98H712L620 368H608L476 111L297 210L296 206Z" fill="#0A0A0A"/>
+  <!-- GRUPO -->
+  <text x="96" y="346" fill="#0A0A0A" font-family="'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif" font-size="102" font-weight="700" letter-spacing="2">GRUPO</text>
+  <!-- ITTI -->
+  <text x="676" y="346" fill="#0A0A0A" font-family="'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif" font-size="102" font-weight="700" letter-spacing="4">ITTI</text>
+</svg>
