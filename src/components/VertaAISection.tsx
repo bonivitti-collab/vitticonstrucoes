@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CONFIG, whatsappLink } from '../../lib/config';
+import { submitVipLead, leadFailureMessage } from '../lib/leads';
+import { trackLead } from '../lib/analytics';
 import {
   Sparkles,
   Brain,
@@ -38,6 +40,8 @@ export const VertaAISection: React.FC = () => {
   const [waitlistProfile, setWaitlistProfile] = useState('proprietario');
   const [waitlistSuccess, setWaitlistSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [botcheck, setBotcheck] = useState(false);
   const [savedLeads, setSavedLeads] = useState<VipLead[]>([]);
   const [showAdminModal, setShowAdminModal] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -60,6 +64,7 @@ export const VertaAISection: React.FC = () => {
     if (!cleanEmail || !cleanEmail.includes('@') || isSubmitting) return;
 
     setIsSubmitting(true);
+    setSubmitError(null);
     const profileLabel =
       waitlistProfile === 'proprietario'
         ? 'Proprietário / Família'
@@ -85,31 +90,32 @@ export const VertaAISection: React.FC = () => {
       console.warn('Erro ao salvar localmente:', storageErr);
     }
 
-    // 2. Reencaminha e-mail para dbonivitti@gmail.com (com cópia para grupo.vitti@outlook.com)
+    // 2. Envio seguro via Web3Forms (chave pública protegida, e-mail administrativo oculto do client)
     try {
-      await fetch(`https://formsubmit.co/ajax/${CONFIG.adminNotificationEmail}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          _subject: `🔥 [Verta AI] Novo Interessado Lista VIP: ${cleanEmail}`,
-          _template: 'table',
-          _cc: CONFIG.email,
-          _replyto: cleanEmail,
-          'E-mail do Interessado': cleanEmail,
-          'Perfil Selecionado': profileLabel,
-          'Data e Hora do Cadastro': nowStr,
-          'Origem': 'Site Grupo Vitti — Seção Verta AI (Lista VIP de Lançamento)',
-          'Observação': 'Interessado na versão gratuita com créditos de lançamento',
-        }),
+      const res = await submitVipLead({
+        email: cleanEmail,
+        profileLabel,
+        submittedAt: nowStr,
+        botcheck,
       });
-    } catch (mailErr) {
-      console.warn('Aviso no envio de e-mail de notificação:', mailErr);
+
+      if (!res.ok) {
+        if (res.reason === 'not_configured') {
+          // Em ambiente sem .env configurado, valida pelo armazenamento local
+          trackLead('lista_vip_verta_local');
+          setWaitlistSuccess(true);
+        } else {
+          setSubmitError(leadFailureMessage(res.reason));
+        }
+      } else {
+        trackLead('lista_vip_verta');
+        setWaitlistSuccess(true);
+      }
+    } catch (err) {
+      console.warn('Falha inesperada no cadastro:', err);
+      setSubmitError('Houve uma instabilidade na conexão. Tente novamente ou entre em contato pelo WhatsApp.');
     } finally {
       setIsSubmitting(false);
-      setWaitlistSuccess(true);
     }
   };
 
@@ -517,12 +523,27 @@ export const VertaAISection: React.FC = () => {
                   ))}
                 </div>
 
+                {/* Honeypot anti-spam para Web3Forms (invisível para usuários reais) */}
+                <input
+                  type="checkbox"
+                  name="botcheck"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  checked={botcheck}
+                  onChange={(e) => setBotcheck(e.target.checked)}
+                  className="hidden"
+                  style={{ display: 'none' }}
+                />
+
                 <div className="flex flex-col sm:flex-row gap-2.5">
                   <input
                     type="email"
                     required
                     value={waitlistEmail}
-                    onChange={(e) => setWaitlistEmail(e.target.value)}
+                    onChange={(e) => {
+                      setWaitlistEmail(e.target.value);
+                      if (submitError) setSubmitError(null);
+                    }}
                     placeholder="Seu melhor e-mail"
                     disabled={isSubmitting}
                     className="w-full sm:flex-1 px-4 py-3.5 rounded-xl bg-black/50 border border-white/15 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#C89467] disabled:opacity-60"
@@ -543,10 +564,25 @@ export const VertaAISection: React.FC = () => {
                   </button>
                 </div>
 
+                {submitError && (
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 text-left space-y-1.5 animate-fadeIn">
+                    <p>{submitError}</p>
+                    <a
+                      href={whatsappLink(`Olá! Tentei me cadastrar na lista VIP da IA do ${CONFIG.vertaName} com o e-mail ${waitlistEmail || ''}, mas prefiro confirmar diretamente por aqui.`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 font-semibold text-white underline hover:text-amber-300"
+                    >
+                      <span>Confirmar vaga pelo WhatsApp</span>
+                      <ArrowUpRight className="w-3 h-3" />
+                    </a>
+                  </div>
+                )}
+
                 <div className="pt-1 flex items-center justify-between text-[11px] font-mono text-[#7A756E]">
                   <span className="flex items-center gap-1 text-[#8A8479]">
                     <Mail className="w-3 h-3 text-emerald-400" />
-                    Notificação automática por e-mail
+                    Notificação automática protegida
                   </span>
                   {savedLeads.length > 0 && (
                     <button
@@ -625,7 +661,7 @@ export const VertaAISection: React.FC = () => {
             <div className="p-4 bg-emerald-500/10 border-b border-emerald-500/20 text-xs text-emerald-300 flex items-center gap-2">
               <Mail className="w-4 h-4 shrink-0 text-emerald-400" />
               <span>
-                Notificações configuradas para: <strong>{CONFIG.adminNotificationEmail}</strong>
+                Notificações ativas via <strong>Web3Forms</strong> (destino confidencial protegido no servidor)
               </span>
             </div>
 

@@ -15,7 +15,9 @@ export const CONFIG = {
   whatsapp: '5522998434956',
   whatsappDisplay: '(22) 99843-4956',
   email: 'grupo.vitti@outlook.com',
-  adminNotificationEmail: 'dbonivitti@gmail.com',
+  // Observação: o e-mail do administrador que recebe os leads NÃO fica mais
+  // no código público. Ele é configurado no painel da Web3Forms, vinculado
+  // à chave VITE_WEB3FORMS_ACCESS_KEY (ver .env.example).
   
   // Redes sociais
   instagram: 'grupovitti',
@@ -29,8 +31,10 @@ export const CONFIG = {
   regiao: 'Região dos Lagos (RJ)',
   cidades: ['Cabo Frio', 'Búzios', 'Arraial do Cabo', 'São Pedro da Aldeia', 'Iguaba Grande', 'Rio das Ostras'],
   
-  // Analytics (deixe vazio por enquanto)
-  gaId: '',
+  // Integrações (valores injetados no build via variáveis de ambiente — ver .env.example)
+  web3formsAccessKey: (import.meta.env.VITE_WEB3FORMS_ACCESS_KEY ?? '').trim(),
+  gaId: (import.meta.env.VITE_GA_ID ?? '').trim(),
+  metaPixelId: (import.meta.env.VITE_META_PIXEL_ID ?? '').trim(),
   
   // Mensagens padrão
   whatsappMessage: 'Olá, vim pelo site do Grupo Vitti. Gostaria de um orçamento.',

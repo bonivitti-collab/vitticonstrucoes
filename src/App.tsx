@@ -367,6 +367,10 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               <img
                 src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80"
                 alt="Arquitetura residencial de alto padrão na praia"
+                width={1600}
+                height={686}
+                decoding="async"
+                fetchPriority="high"
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -474,6 +478,10 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                   <img
                     src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
                     alt="Canteiro de obras de alto padrão e acabamento arquitetônico"
+                    width={1200}
+                    height={900}
+                    loading="lazy"
+                    decoding="async"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                   />
@@ -594,6 +602,10 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                     <img
                       src={item.img}
                       alt={item.title}
+                      width={800}
+                      height={600}
+                      loading="lazy"
+                      decoding="async"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />

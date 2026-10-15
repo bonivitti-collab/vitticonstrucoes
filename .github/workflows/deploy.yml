@@ -1,0 +1,77 @@
+name: CI/CD — Grupo Vitti Plataforma
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Typecheck & Build de Produção
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar Dependências
+        run: npm ci
+
+      - name: Verificação Estática de Tipagem (TypeScript)
+        run: npx tsc --noEmit
+
+      - name: Compilar Bundle Vite de Produção
+        env:
+          VITE_WEB3FORMS_ACCESS_KEY: ${{ secrets.VITE_WEB3FORMS_ACCESS_KEY }}
+          VITE_GA_ID: ${{ secrets.VITE_GA_ID }}
+          VITE_META_PIXEL_ID: ${{ secrets.VITE_META_PIXEL_ID }}
+        run: npm run build
+
+      - name: Salvar Artefatos do Build (dist)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-production
+          path: dist
+          retention-days: 7
+
+  deploy-vercel:
+    name: Deploy Contínuo (Vercel)
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Baixar Artefatos Compilados
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-production
+          path: dist
+
+      - name: Deploy para Vercel (Produção)
+        if: env.VERCEL_TOKEN != ''
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod --prebuilt'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Log de Status do Deploy
+        if: env.VERCEL_TOKEN == ''
+        run: |
+          echo "⚠️ VERCEL_TOKEN não configurado no GitHub Secrets."
+          echo "O build foi validado e compilado com 100% de sucesso."
+          echo "Para ativar o deploy automático, adicione VERCEL_TOKEN, VERCEL_ORG_ID e VERCEL_PROJECT_ID nos Secrets do repositório."
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
