@@ -32,7 +32,7 @@ export const CONFIG = {
   cidades: ['Cabo Frio', 'Búzios', 'Arraial do Cabo', 'São Pedro da Aldeia', 'Iguaba Grande', 'Rio das Ostras'],
   
   // Integrações (valores injetados no build via variáveis de ambiente — ver .env.example)
-  web3formsAccessKey: (import.meta.env.VITE_WEB3FORMS_ACCESS_KEY ?? '').trim(),
+  web3formsAccessKey: (import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || '13ebf8d7-c007-47c7-a671-4859290461b8').trim(),
   gaId: (import.meta.env.VITE_GA_ID ?? '').trim(),
   metaPixelId: (import.meta.env.VITE_META_PIXEL_ID ?? '').trim(),
   
