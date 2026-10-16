@@ -14,7 +14,7 @@ export const CONFIG = {
   // Contatos
   whatsapp: '5522998434956',
   whatsappDisplay: '(22) 99843-4956',
-  email: 'grupo.vitti@outlook.com',
+  email: 'contato@vitticonstrucoes.com.br',
   // Observação: o e-mail do administrador que recebe os leads NÃO fica mais
   // no código público. Ele é configurado no painel da Web3Forms, vinculado
   // à chave VITE_WEB3FORMS_ACCESS_KEY (ver .env.example).
