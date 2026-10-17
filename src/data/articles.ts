@@ -61,7 +61,7 @@ export const ARTICLES: Article[] = [
   },
   {
     id: '2',
-    slug: 'orcamento-que-dobra-como-evitar',
+    slug: 'orcamento-de-obra-fechado-sem-aditivos',
     title: 'O Pesadelo do Orçamento que Dobra: Por Que Obras Estouram e Como Ter Custo Fixo Real',
     subtitle: 'Entenda os 5 ralos invisíveis de dinheiro em construções residenciais e a metodologia que garante previsibilidade financeira.',
     category: 'Custos & Orçamento',
@@ -85,7 +85,7 @@ export const ARTICLES: Article[] = [
         sectionTitle: 'Como a engenharia de precisão blinda seu bolso',
         paragraphs: [
           'Um orçamento sério é construído com Composição de Custos Unitários e Curva ABC. Antes de bater um prego no lote, cada saco de cimento, cada metro linear de cabo de cobre e cada hora de equipe especializada já foram tabulados e cotados em fornecedores reais da Região dos Lagos.',
-          'Com a plataforma Verta, nós dividimos o cronograma em entregas físicas comprovadas. O cliente não adianta dinheiro para etapas futuras sem a medição e aprovação da etapa anterior.',
+          'Nós dividimos o cronograma em entregas físicas comprovadas. O cliente não adianta dinheiro para etapas futuras sem a medição e aprovação da etapa anterior.',
         ],
       },
     ],
@@ -143,7 +143,7 @@ export const ARTICLES: Article[] = [
     highlights: [
       'Relatórios fotográficos geolocalizados e diário de obra digital com medição real.',
       'Reuniões quinzenais remotas com pauta objetiva e comparativo entre planejado vs. executado.',
-      'A plataforma Verta permite acessar notas fiscais, fotos em alta resolução e o avanço físico do seu celular.',
+      'Relatórios transparentes com notas fiscais, fotos em alta resolução e o avanço físico direto no seu celular.',
       'Eliminação da necessidade de perder sextas e segundas-feiras no trânsito da Ponte Rio-Niterói e Via Lagos.',
     ],
     content: [
@@ -206,12 +206,12 @@ export const ARTICLES: Article[] = [
   },
   {
     id: '6',
-    slug: 'lencol-freatico-alto-umidade-cabo-frio',
-    title: 'Lençol Freático Alto e Umidade em Cabo Frio: O Fim das Paredes Descascando e Mofo',
-    subtitle: 'Bairros como Ogiva, Peró, Passagem e Braga têm água a menos de 1 metro de profundidade. Aprenda o segredo da impermeabilização definitiva.',
+    slug: 'lencol-freatico-alto-e-umidade-cabo-frio-tamoios',
+    title: 'Lençol Freático Alto e Umidade em Cabo Frio e Tamoios: O Fim das Paredes Descascando e Mofo',
+    subtitle: 'Bairros como Tamoios (Unamar, Verão Vermelho, Orla 500), Ogiva, Peró, Passagem e Braga têm água a menos de 1 metro de profundidade. Aprenda o segredo da impermeabilização definitiva.',
     category: 'Estrutura & Maresia',
     readTime: '6 min de leitura',
-    problemSummary: 'Pintura nova que borbulha, rodapés que apodrecem e cheiro constante de mofo na casa de praia são causados por capilaridade do solo úmido que sobe pelas vigas de fundação.',
+    problemSummary: 'Pintura nova que borbulha, rodapés que apodrecem e cheiro constante de mofo na casa de praia são causados por capilaridade do solo úmido que sobe pelas vigas de fundação — um desafio crítico comum em Tamoios (2º Distrito de Cabo Frio) e áreas litorâneas planas.',
     highlights: [
       'A umidade ascendente por capilaridade sobe pelos poros microscópicos do concreto se o baldrame não estiver 100% blindado.',
       'Pintura asfáltica simples ("tinta preta diluída") não é suficiente em áreas com lençol freático alto.',
@@ -222,7 +222,7 @@ export const ARTICLES: Article[] = [
       {
         sectionTitle: 'Por que a umidade sobe pelas paredes?',
         paragraphs: [
-          'Em cidades litorâneas e lagunares planas como Cabo Frio, São Pedro da Aldeia, Iguaba Grande e Rio das Ostras, o lençol freático costuma ser encontrado a pouquíssimos metros — ou até centímetros — do nível do solo, especialmente nas épocas de maré alta ou chuvas.',
+          'Em cidades litorâneas e lagunares planas como Cabo Frio, Tamoios (Unamar, Verão Vermelho, Orla 500), São Pedro da Aldeia, Iguaba Grande e Rio das Ostras, o lençol freático costuma ser encontrado a pouquíssimos metros — ou até centímetros — do nível do solo, especialmente nas épocas de maré alta ou chuvas intensas.',
           'O concreto e a argamassa agem exatamente como um torrão de açúcar encostado no café: a água é sugada para cima por capilaridade. Ao atingir as primeiras fiadas de tijolo, a água evapora nas paredes internas, trazendo os sais dissolvidos que estouram a massa corrida e a pintura.',
         ],
       },
@@ -235,10 +235,10 @@ export const ARTICLES: Article[] = [
     ],
     practicalTips: [
       'Nunca aceite cobrir parede úmida com gesso ou placa de drywall para "esconder" o problema; isso apenas alimenta fungos e colônias de mofo.',
-      'Em construções novas, exija rebaixamento temporário de lençol freático com ponteiras filtrantes durante a concretagem das sapatas.',
+      'Em construções novas em Tamoios e Cabo Frio, exija rebaixamento temporário de lençol freático com ponteiras filtrantes durante a concretagem das sapatas.',
       'Aplique manta asfáltica dupla ou polímero cristalizante antes de executar o contrapiso de regularização.',
     ],
-    whatsappPrompt: 'Olá! Sofro com umidade ou estou planejando construir em área com lençol freático alto em Cabo Frio/Região dos Lagos. Como vocês tratam isso?',
+    whatsappPrompt: 'Olá! Sofro com umidade ou estou planejando construir em área com lençol freático alto em Cabo Frio, Tamoios ou Região dos Lagos. Como vocês tratam isso?',
   },
   {
     id: '7',
@@ -363,7 +363,7 @@ export const ARTICLES: Article[] = [
       'Acompanhamento semanal por fotos e vídeos no WhatsApp: você não precisa pegar estrada todo fim de semana.',
       'Estrutura reforçada de verdade com proteção anti-maresia para a casa durar décadas.',
       'Garantia pós-obra e atendimento direto com o responsável: olho no olho e compromisso.',
-      'Acesso gratuito à inteligência artificial Verta para leitura de plantas e esclarecimento de dúvidas.',
+      'Suporte técnico e esclarecimento de dúvidas para análise de plantas e especificações da sua obra.',
     ],
     content: [
       {

@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  /** Web3Forms public access key (Lista VIP Verta). */
+  /** Web3Forms public access key. */
   readonly VITE_WEB3FORMS_ACCESS_KEY?: string;
   /** Google Analytics 4 measurement ID (G-XXXXXXXXXX). */
   readonly VITE_GA_ID?: string;

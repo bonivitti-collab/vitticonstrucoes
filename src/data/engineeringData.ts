@@ -99,10 +99,10 @@ export const CAPABILITIES: CapabilityItem[] = [
     index: '04',
     id: 'planejamento-orcamentacao',
     category: 'Residencial Alto Padrão',
-    title: '04. Planejamento Executivo, Orçamentação Analítica & Gestão via Verta',
+    title: '04. Planejamento Executivo, Orçamentação Analítica & Gestão Integrada',
     subtitle: 'Previsibilidade financeira linha a linha antes da mobilização do canteiro',
     description:
-      'Eliminamos o improviso financeiro na construção civil. Elaboramos orçamentos paramétricos e executivos com composições próprias da Região dos Lagos, curva ABC de insumos e cronograma físico-financeiro acompanhado em tempo real pela plataforma Verta.',
+      'Eliminamos o improviso financeiro na construção civil. Elaboramos orçamentos paramétricos e executivos com composições próprias da Região dos Lagos, curva ABC de insumos e cronograma físico-financeiro acompanhado em tempo real com total transparência.',
     deliverables: [
       'Orçamento executivo analítico discriminando cada insumo, serviço e encargo',
       'Cronograma físico-financeiro de desembolso mensal alinhado ao fluxo de caixa do cliente',

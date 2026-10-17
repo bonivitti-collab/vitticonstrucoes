@@ -75,29 +75,6 @@ async function postToWeb3Forms(fields: FormFields): Promise<LeadSubmitResult> {
   }
 }
 
-export interface VipLeadInput {
-  email: string;
-  profileLabel: string;
-  submittedAt: string;
-  /** Valor do campo honeypot. Usuários reais nunca o preenchem. */
-  botcheck?: boolean;
-}
-
-export async function submitVipLead(input: VipLeadInput): Promise<LeadSubmitResult> {
-  // Bot detectado: finge sucesso para não dar pistas, mas não envia nada.
-  if (input.botcheck) return { ok: true };
-
-  return postToWeb3Forms({
-    subject: `[Verta AI] Novo interessado na Lista VIP: ${input.email}`,
-    from_name: `${CONFIG.siteName} — Site`,
-    // A Web3Forms usa o campo `email` como Reply-To automaticamente.
-    email: input.email,
-    'Perfil selecionado': input.profileLabel,
-    'Data e hora do cadastro': input.submittedAt,
-    Origem: 'Site Grupo Vitti — Seção Verta AI (Lista VIP de Lançamento)',
-    'Página': typeof window !== 'undefined' ? window.location.href : CONFIG.siteUrl,
-  });
-}
 
 /** Mensagens amigáveis em pt-BR para cada tipo de falha. */
 export function leadFailureMessage(reason: LeadFailureReason): string {

@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CONFIG, whatsappLink } from '../lib/config';
 import { VittiLogo } from './components/VittiLogo';
 import { ARTICLES, Article } from './data/articles';
 import { ArticleModal } from './components/ArticleModal';
-import { VertaAISection } from './components/VertaAISection';
+import { PROJECTS_MEMORIAL, ProjectMemorial } from './data/projectsData';
+import { ProjectMemorialModal } from './components/ProjectMemorialModal';
 import { WhatsAppIcon } from './components/WhatsAppIcon';
 import { ArchitecturalIntro } from './components/ArchitecturalIntro';
 import {
@@ -36,13 +37,66 @@ import {
 export default function App() {
   const [introFinished, setIntroFinished] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectMemorial | null>(null);
   const [articleCategory, setArticleCategory] = useState<string>('all');
 
   // Quick WhatsApp Lead Form
   const [clientName, setClientName] = useState('');
-  const [clientCity, setClientCity] = useState<(typeof CONFIG.cidades)[number]>('Búzios');
-  const [clientScope, setClientScope] = useState('Construção Residencial do Zero');
+  const [clientCity, setClientCity] = useState<(typeof CONFIG.cidades)[number]>('Cabo Frio');
+  const [clientScope, setClientScope] = useState('Construção Residencial do Zero (Chave na Mão)');
   const [clientMessage, setClientMessage] = useState('');
+
+  // Sincronização dinâmica de URL para os 10 Guias Práticos (SEO e navegação direta)
+  useEffect(() => {
+    const handleUrlRoute = () => {
+      const path = window.location.pathname;
+      if (path.startsWith('/guias/')) {
+        const slug = path.replace('/guias/', '').replace(/\/$/, '');
+        const found = ARTICLES.find((a) => a.slug === slug);
+        if (found) {
+          setSelectedArticle(found);
+          document.title = `${found.title} — ${CONFIG.siteName}`;
+          const metaDesc = document.querySelector('meta[name="description"]');
+          if (metaDesc) metaDesc.setAttribute('content', found.subtitle);
+          const canonical = document.querySelector('link[rel="canonical"]');
+          if (canonical) canonical.setAttribute('href', `https://vitticonstrucoes.com.br/guias/${found.slug}`);
+          return;
+        }
+      }
+      setSelectedArticle(null);
+    };
+
+    handleUrlRoute();
+    window.addEventListener('popstate', handleUrlRoute);
+    return () => window.removeEventListener('popstate', handleUrlRoute);
+  }, []);
+
+  const handleOpenArticle = (art: Article) => {
+    setSelectedArticle(art);
+    window.history.pushState({ articleSlug: art.slug }, '', `/guias/${art.slug}`);
+    document.title = `${art.title} — ${CONFIG.siteName}`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', art.subtitle);
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', `https://vitticonstrucoes.com.br/guias/${art.slug}`);
+  };
+
+  const handleCloseArticle = () => {
+    setSelectedArticle(null);
+    if (window.location.pathname.startsWith('/guias/')) {
+      window.history.pushState(null, '', '/');
+    }
+    document.title = 'Grupo Vitti — Construtora em Cabo Frio, Búzios e Região dos Lagos';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      metaDesc.setAttribute(
+        'content',
+        'Construtora de casas de alto padrão e reformas em Cabo Frio, Tamoios (2º Distrito), Búzios, Arraial do Cabo e Região dos Lagos. Engenharia de precisão, proteção anti-maresia e transparência radical.'
+      );
+    }
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', 'https://vitticonstrucoes.com.br');
+  };
 
   const filteredArticles = ARTICLES.filter((art) => {
     return articleCategory === 'all' || art.category === articleCategory;
@@ -112,11 +166,11 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
     {
       icon: Layers,
       num: '04',
-      title: 'Gestão Completa da Obra & Inteligência Verta',
-      subtitle: 'Acompanhamento direto e tecnologia para acelerar seu projeto.',
-      desc: 'Com o Grupo Vitti, você acompanha tudo de perto pelo celular: fotos, vídeos semanais e o apoio da inteligência artificial Verta para leitura de plantas e prevenção de erros.',
+      title: 'Gestão Completa da Obra & Transparência Total',
+      subtitle: 'Acompanhamento direto e relatórios detalhados para o seu projeto.',
+      desc: 'Com o Grupo Vitti, você acompanha tudo de perto pelo celular: fotos, vídeos semanais, medição física de avanço e controle rigoroso de etapas.',
       points: [
-        'Acesso prioritário e gratuito à inteligência artificial Verta',
+        'Relatórios fotográficos e vídeos semanais direto no seu WhatsApp',
         'Prevenção de erros antes de comprar materiais ou levantar paredes',
         'Transparência total em compras com repasse direto de descontos para você',
       ],
@@ -124,29 +178,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
     },
   ];
 
-  const galleryItems = [
-    {
-      city: 'Búzios',
-      title: 'Residência Mirante da Ferradura',
-      type: 'Construção Turnkey · 540 m²',
-      tag: 'Concreto Aparente & Madeira Cumaru',
-      img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-      city: 'Cabo Frio',
-      title: 'Casa Pátio das Dunas',
-      type: 'Residência Unifamiliar · 385 m²',
-      tag: 'Esquadrias Navais & Piso Travertino',
-      img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    },
-    {
-      city: 'Arraial do Cabo',
-      title: 'Pavilhão Costeiro Pontal',
-      type: 'Estrutura em Encosta · 410 m²',
-      tag: 'Fundação em Rocha & Piscina Suspensa',
-      img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
-    },
-  ];
+
 
   return (
     <div className="min-h-screen bg-[#0D0C0B] text-[#F5F2EB] selection:bg-[#C89467] selection:text-[#0D0C0B] font-sans antialiased">
@@ -156,8 +188,8 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
       {/* ═══════════════════════════════════════════════════════════════════
           NAVBAR: Modern, Clean, Impactful Luxury Navigation
          ═══════════════════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-40 bg-[#0D0C0B]/90 backdrop-blur-md border-b border-white/10 transition-colors">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 bg-[#0D0C0B]/90 backdrop-blur-md border-b border-white/10 transition-colors pt-[env(safe-area-inset-top,0px)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-18 sm:h-20 flex items-center justify-between gap-3 sm:gap-4">
           {/* Logo Lockup Oficial */}
           <div className="flex-1 flex items-center justify-start">
             <a
@@ -193,15 +225,6 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>10 Guias Práticos</span>
-            </a>
-            <a
-              href="#verta"
-              className="hover:text-white transition-colors flex items-center gap-1.5"
-            >
-              <span>{CONFIG.vertaName} AI</span>
-              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                Grátis
-              </span>
             </a>
             <a href="#contato" className="hover:text-white transition-colors">
               Contato
@@ -258,15 +281,6 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             >
               <Sparkles className="w-3 h-3 text-[#C89467]" />
               <span>10 Guias</span>
-            </a>
-            <a
-              href="#verta"
-              className="px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-all flex items-center gap-1.5"
-            >
-              <span>{CONFIG.vertaName} AI</span>
-              <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300">
-                Grátis
-              </span>
             </a>
             <a
               href="#contato"
@@ -593,10 +607,11 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {galleryItems.map((item, idx) => (
+              {PROJECTS_MEMORIAL.map((item) => (
                 <div
-                  key={idx}
-                  className="rounded-2xl overflow-hidden border border-white/10 bg-[#0D0C0B] flex flex-col group hover:border-white/30 transition-all"
+                  key={item.id}
+                  onClick={() => setSelectedProject(item)}
+                  className="rounded-2xl overflow-hidden border border-white/10 bg-[#0D0C0B] flex flex-col group hover:border-[#C89467]/60 hover:shadow-xl hover:shadow-[#C89467]/5 transition-all cursor-pointer hover:-translate-y-1 duration-200"
                 >
                   <div className="aspect-[4/3] overflow-hidden relative">
                     <img
@@ -609,16 +624,26 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-[11px] font-mono font-semibold text-white border border-white/15">
+                    <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/70 backdrop-blur-md text-[11px] font-mono font-semibold text-white border border-white/15">
                       {item.city}
+                    </div>
+                    <div className="absolute top-4 right-4 px-2.5 py-1 rounded-md bg-[#C89467]/90 backdrop-blur-sm text-[10px] font-mono font-bold uppercase text-white shadow-sm">
+                      Ficha Técnica
                     </div>
                   </div>
 
-                  <div className="p-6 space-y-2 flex-1">
+                  <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
                     <div>
                       <div className="text-xs font-mono text-[#C89467]">{item.type}</div>
-                      <h3 className="text-lg font-bold text-white mt-1">{item.title}</h3>
-                      <div className="text-xs text-[#8A8479] mt-1">{item.tag}</div>
+                      <h3 className="text-lg font-bold text-white group-hover:text-[#E8C29E] transition-colors mt-1 leading-snug">
+                        {item.title}
+                      </h3>
+                      <div className="text-xs text-[#8A8479] mt-1.5">{item.tag}</div>
+                    </div>
+
+                    <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-semibold text-[#E8C29E] group-hover:text-white transition-colors">
+                      <span>Ver Memorial & Especificações Técnicas</span>
+                      <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
                   </div>
                 </div>
@@ -674,7 +699,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               {filteredArticles.map((art) => (
                 <article
                   key={art.id}
-                  onClick={() => setSelectedArticle(art)}
+                  onClick={() => handleOpenArticle(art)}
                   className="p-6 rounded-2xl bg-[#141312] border border-white/10 hover:border-[#C89467]/60 transition-all cursor-pointer flex flex-col justify-between group hover:-translate-y-1 duration-200"
                 >
                   <div className="space-y-4">
@@ -687,7 +712,16 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                     </div>
 
                     <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-[#E8C29E] transition-colors leading-snug">
-                      {art.title}
+                      <a
+                        href={`/guias/${art.slug}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenArticle(art);
+                        }}
+                        className="hover:underline focus-visible:outline-none"
+                      >
+                        {art.title}
+                      </a>
                     </h3>
 
                     <p className="text-xs sm:text-sm text-[#A8A29A] leading-relaxed line-clamp-3">
@@ -710,11 +744,6 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             )}
           </div>
         </section>
-
-        {/* ═══════════════════════════════════════════════════════════════════
-            VERTA AI: Construction Civil AI & SaaS
-           ═══════════════════════════════════════════════════════════════════ */}
-        <VertaAISection />
 
         {/* ═══════════════════════════════════════════════════════════════════
             CONTATO RÁPIDO & WHATSAPP DIRETO
@@ -931,7 +960,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               © {new Date().getFullYear()} {CONFIG.siteName}. Todos os direitos reservados.
             </div>
             <div>
-              Atendimento em Cabo Frio · Búzios · Arraial do Cabo · São Pedro da Aldeia · Iguaba Grande · Rio das Ostras
+              Atendimento em Cabo Frio · Tamoios (2º Distrito) · Búzios · Arraial do Cabo · São Pedro da Aldeia · Iguaba Grande · Rio das Ostras
             </div>
           </div>
         </div>
@@ -942,7 +971,17 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
         {selectedArticle && (
           <ArticleModal
             article={selectedArticle}
-            onClose={() => setSelectedArticle(null)}
+            onClose={handleCloseArticle}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Interactive Project Memorial Technical Modal */}
+      <AnimatePresence>
+        {selectedProject && (
+          <ProjectMemorialModal
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
           />
         )}
       </AnimatePresence>

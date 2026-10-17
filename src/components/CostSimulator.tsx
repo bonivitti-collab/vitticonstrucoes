@@ -8,7 +8,7 @@ type FinishStandard = 'essencial' | 'alto_padrao' | 'monolitico_costeiro';
 type TerrainCondition = 'plano' | 'declive_encosta' | 'frente_mar';
 
 export const CostSimulator: React.FC = () => {
-  const [selectedCity, setSelectedCity] = useState<(typeof CONFIG.cidades)[number]>('Búzios');
+  const [selectedCity, setSelectedCity] = useState<(typeof CONFIG.cidades)[number]>('Cabo Frio');
   const [scope, setScope] = useState<InterventionScope>('turnkey');
   const [standard, setStandard] = useState<FinishStandard>('alto_padrao');
   const [terrain, setTerrain] = useState<TerrainCondition>('plano');
@@ -28,9 +28,10 @@ export const CostSimulator: React.FC = () => {
     };
 
     const cityFactor: Record<(typeof CONFIG.cidades)[number], number> = {
+      'Cabo Frio': 1.02,
+      'Tamoios / Cabo Frio': 1.00,
       'Búzios': 1.08,
       'Arraial do Cabo': 1.07,
-      'Cabo Frio': 1.02,
       'São Pedro da Aldeia': 0.96,
       'Iguaba Grande': 0.95,
       'Rio das Ostras': 1.01,
