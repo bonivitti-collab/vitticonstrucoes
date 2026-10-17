@@ -29,7 +29,7 @@ export const CostSimulator: React.FC = () => {
 
     const cityFactor: Record<(typeof CONFIG.cidades)[number], number> = {
       'Cabo Frio': 1.02,
-      'Tamoios / Cabo Frio': 1.00,
+      'Tamoios / Unamar - Cabo Frio': 1.00,
       'Búzios': 1.08,
       'Arraial do Cabo': 1.07,
       'São Pedro da Aldeia': 0.96,

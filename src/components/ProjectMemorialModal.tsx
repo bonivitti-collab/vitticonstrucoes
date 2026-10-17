@@ -77,7 +77,7 @@ export const ProjectMemorialModal: React.FC<ProjectMemorialModalProps> = ({ proj
           <div className="relative rounded-xl overflow-hidden aspect-[16/9] border border-[#DDD8CD] shadow-sm">
             <img
               src={project.img}
-              alt={project.title}
+              alt={project.imageAlt || project.title}
               width={1200}
               height={675}
               className="w-full h-full object-cover"

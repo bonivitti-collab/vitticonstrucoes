@@ -32,7 +32,32 @@ import {
   Send,
   Instagram,
   Facebook,
+  HelpCircle,
+  ChevronDown,
 } from 'lucide-react';
+
+const FAQ_ITEMS = [
+  {
+    question: 'Vocês realizam obras do zero e reformas em Cabo Frio, Tamoios (Unamar) e Búzios?',
+    answer:
+      'Sim. Atendemos toda a Região dos Lagos com equipes locais, incluindo Cabo Frio (centro, Ogiva, Peró e 2º Distrito em Tamoios/Unamar), Armação dos Búzios, Arraial do Cabo, São Pedro da Aldeia, Iguaba Grande e Rio das Ostras.',
+  },
+  {
+    question: 'Como funciona o contrato de obra a preço fechado do Grupo Vitti?',
+    answer:
+      'Elaboramos o orçamento executivo detalhado antes do início da obra, com cronograma físico-financeiro definido por etapas. Assim você sabe exatamente quanto vai investir do início à entrega das chaves, sem aditivos surpresa.',
+  },
+  {
+    question: 'Moro fora da Região dos Lagos. Como faço para acompanhar minha obra à distância?',
+    answer:
+      'Você recebe relatórios semanais diretamente no seu WhatsApp com fotos em alta resolução, vídeos de ensaios técnicos e medição física real do avanço de cada etapa, sem precisar viajar todo fim de semana.',
+  },
+  {
+    question: 'Qual o diferencial técnico das obras do Grupo Vitti contra maresia e umidade?',
+    answer:
+      'Aplicamos rigorosamente as normas de agressividade marinha (NBR 6118), com cobrimento adequado de armaduras, concreto estrutural dosado, impermeabilização de vigas baldrame contra lençol freático raso (muito comum em Cabo Frio e Tamoios) e especificação de esquadrias com padrão naval.',
+  },
+];
 
 export default function App() {
   const [introFinished, setIntroFinished] = useState(false);
@@ -195,7 +220,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             <a
               href="#"
               className="flex items-center group focus-visible:outline-none"
-              aria-label={CONFIG.siteName}
+              aria-label="Grupo Vitti — Construção, Reforma e Tecnologia"
             >
               <VittiLogo
                 variant="official-with-subtitle"
@@ -225,6 +250,9 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>10 Guias Práticos</span>
+            </a>
+            <a href="#faq" className="hover:text-white transition-colors">
+              FAQ
             </a>
             <a href="#contato" className="hover:text-white transition-colors">
               Contato
@@ -281,6 +309,12 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             >
               <Sparkles className="w-3 h-3 text-[#C89467]" />
               <span>10 Guias</span>
+            </a>
+            <a
+              href="#faq"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#B8B2A7] hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-all"
+            >
+              FAQ
             </a>
             <a
               href="#contato"
@@ -380,7 +414,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             >
               <img
                 src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80"
-                alt="Arquitetura residencial de alto padrão na praia"
+                alt="Construção de casas de alto padrão resistentes à maresia em Cabo Frio, Búzios e Região dos Lagos - Grupo Vitti"
                 width={1600}
                 height={686}
                 decoding="async"
@@ -491,7 +525,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                 <div className="relative rounded-2xl overflow-hidden border border-white/15 aspect-[4/3] shadow-2xl">
                   <img
                     src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
-                    alt="Canteiro de obras de alto padrão e acabamento arquitetônico"
+                    alt="Acompanhamento de obra e engenharia civil de alto padrão na Região dos Lagos - Grupo Vitti"
                     width={1200}
                     height={900}
                     loading="lazy"
@@ -616,7 +650,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                   <div className="aspect-[4/3] overflow-hidden relative">
                     <img
                       src={item.img}
-                      alt={item.title}
+                      alt={item.imageAlt || item.title}
                       width={800}
                       height={600}
                       loading="lazy"
@@ -746,6 +780,58 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════════
+            PERGUNTAS FREQUENTES (FAQ)
+           ═══════════════════════════════════════════════════════════════════ */}
+        <section id="faq" className="py-20 sm:py-28 bg-[#141312] border-t border-white/10">
+          <div className="max-w-4xl mx-auto px-5 sm:px-8">
+            <div className="text-center space-y-4 mb-14">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#C89467]/10 border border-[#C89467]/20 text-xs font-mono tracking-wider uppercase text-[#C89467]">
+                <HelpCircle className="w-3.5 h-3.5" />
+                <span>Dúvidas Frequentes</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Perguntas Frequentes Sobre Obras no Litoral
+              </h2>
+              <p className="text-base text-[#B8B2A7] max-w-2xl mx-auto leading-relaxed">
+                Respostas diretas da nossa equipe de engenharia para as principais dúvidas sobre construção, contratos de preço fechado e blindagem contra maresia na Região dos Lagos.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              {FAQ_ITEMS.map((item, idx) => (
+                <details
+                  key={idx}
+                  className="group rounded-2xl bg-[#0D0C0B] border border-white/10 hover:border-[#C89467]/50 transition-all p-6 open:border-[#C89467]/60 open:shadow-lg open:shadow-[#C89467]/5"
+                >
+                  <summary className="flex items-center justify-between cursor-pointer list-none font-semibold text-base sm:text-lg text-white group-hover:text-[#E8C29E] transition-colors gap-4">
+                    <span>{item.question}</span>
+                    <ChevronDown className="w-5 h-5 text-[#C89467] shrink-0 transition-transform duration-300 group-open:rotate-180" />
+                  </summary>
+                  <div className="mt-4 pt-4 border-t border-white/10 text-sm sm:text-base text-[#A8A29A] leading-relaxed">
+                    {item.answer}
+                  </div>
+                </details>
+              ))}
+            </div>
+
+            <div className="mt-10 p-6 rounded-2xl bg-white/[0.02] border border-white/10 text-center flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-sm text-[#B8B2A7] text-center sm:text-left">
+                Tem uma dúvida específica sobre o solo ou topografia do seu terreno?
+              </div>
+              <a
+                href={whatsappLink('Olá! Li o FAQ no site e gostaria de tirar uma dúvida técnica sobre meu terreno na Região dos Lagos.')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25D366] text-[#0A2412] font-semibold text-xs sm:text-sm hover:brightness-110 transition-all"
+              >
+                <span>Tirar Dúvida no WhatsApp</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════════════
             CONTATO RÁPIDO & WHATSAPP DIRETO
            ═══════════════════════════════════════════════════════════════════ */}
         <section id="contato" className="py-20 sm:py-28 bg-[#0D0C0B] border-t border-white/10">
@@ -804,8 +890,8 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                     <div>
                       <div className="text-xs text-[#8A8479]">Base Operacional</div>
                       <div className="text-sm font-bold text-white">{CONFIG.regiao}</div>
-                      <div className="text-xs text-[#8A8479] mt-0.5">
-                        {CONFIG.cidades.join(' · ')}
+                      <div className="text-xs text-[#8A8479] mt-0.5 leading-relaxed">
+                        Cabo Frio (Braga, Peró, Ogiva) · Tamoios e Unamar (2º Distrito) · Búzios (Ferradura, Geribá, Manguinhos) · Arraial do Cabo (Pontal do Atalaia) · São Pedro da Aldeia · Iguaba Grande · Rio das Ostras
                       </div>
                     </div>
                   </div>
@@ -922,7 +1008,13 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
         <div className="max-w-7xl mx-auto px-5 sm:px-8 space-y-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/10">
             <div className="flex flex-col items-start gap-1">
-              <VittiLogo variant="official-with-subtitle" theme="light" />
+              <a
+                href="#"
+                className="flex items-center group focus-visible:outline-none"
+                aria-label="Grupo Vitti — Construção, Reforma e Tecnologia"
+              >
+                <VittiLogo variant="official-with-subtitle" theme="light" />
+              </a>
               <div className="text-xs text-[#888] font-mono mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
                 <span className="whitespace-nowrap">CNPJ {CONFIG.cnpj}</span>
                 <span className="hidden sm:inline text-white/20">·</span>
@@ -959,8 +1051,8 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             <div>
               © {new Date().getFullYear()} {CONFIG.siteName}. Todos os direitos reservados.
             </div>
-            <div>
-              Atendimento em Cabo Frio · Tamoios (2º Distrito) · Búzios · Arraial do Cabo · São Pedro da Aldeia · Iguaba Grande · Rio das Ostras
+            <div className="text-center sm:text-right">
+              Atendimento em Cabo Frio (Braga, Peró, Ogiva) · Tamoios e Unamar (2º Distrito) · Búzios (Ferradura, Geribá, Manguinhos) · Arraial do Cabo (Pontal do Atalaia) · São Pedro da Aldeia · Iguaba Grande · Rio das Ostras
             </div>
           </div>
         </div>

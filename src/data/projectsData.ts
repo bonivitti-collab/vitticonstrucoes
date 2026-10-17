@@ -5,6 +5,7 @@ export interface ProjectMemorial {
   type: string;
   tag: string;
   img: string;
+  imageAlt: string;
   regionalContext: string;
   idealTerrain: string;
   engineeringSpecs: {
@@ -34,6 +35,7 @@ export const PROJECTS_MEMORIAL: ProjectMemorial[] = [
     type: 'Construção Turnkey · 540 m²',
     tag: 'Concreto Aparente & Madeira Cumaru',
     img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
+    imageAlt: 'Construção de casa de alto padrão em concreto aparente e madeira cumaru na Ferradura, Búzios - Grupo Vitti',
     regionalContext: 'Armação dos Búzios (Ferradura, Geribá, Brava, Rasa, João Fernandes) e encostas litorâneas.',
     idealTerrain:
       'Lotes em aclive, declive acentuado ou platôs rochosos característicos da península de Búzios. O partido arquitetônico e estrutural é planejado para acompanhar a topografia natural, eliminando a necessidade de movimentações massivas de terra e reduzindo em até 30% os custos de corte e bota-fora.',
@@ -88,6 +90,7 @@ export const PROJECTS_MEMORIAL: ProjectMemorial[] = [
     type: 'Residência Unifamiliar · 385 m²',
     tag: 'Esquadrias Navais & Piso Travertino',
     img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    imageAlt: 'Construção residencial unifamiliar com esquadrias navais em Cabo Frio, Tamoios e Unamar - Grupo Vitti',
     regionalContext:
       'Cabo Frio 1º Distrito (Ogiva, Peró, Passagem, Braga, Foguete), Tamoios / 2º Distrito de Cabo Frio (Unamar, Verão Vermelho, Orla 500, Terras Alphaville) e condomínios de São Pedro da Aldeia.',
     idealTerrain:
@@ -143,6 +146,7 @@ export const PROJECTS_MEMORIAL: ProjectMemorial[] = [
     type: 'Estrutura em Encosta · 410 m²',
     tag: 'Fundação em Rocha & Piscina Suspensa',
     img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+    imageAlt: 'Obra de casa em encosta com fundação em rocha e piscina suspensa no Pontal do Atalaia, Arraial do Cabo - Grupo Vitti',
     regionalContext: 'Arraial do Cabo (Pontal do Atalaia, Prainha), Búzios (Ferradura / Forno) e falésias rochosas da costa.',
     idealTerrain:
       'Terrenos em encosta íngreme ou sobre maciços rochosos com vista panorâmica frontal para o mar aberto. A engenharia atua com pilares esbeltos e balanços arrojados que pousam sobre a rocha com mínima intervenção no solo natural, garantindo leveza visual e estabilidade sísmica/geotécnica permanente.',

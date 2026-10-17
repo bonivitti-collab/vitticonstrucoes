@@ -146,11 +146,36 @@ function buildHomeSemanticHtml(): string {
       </div>
     </section>
 
-    <section id="contato" style="padding:4rem 1.5rem;background:#0D0C0B;border-top:1px solid rgba(255,255,255,0.1);">
+    <section id="faq" style="padding:4rem 1.5rem;background:#0D0C0B;border-top:1px solid rgba(255,255,255,0.1);">
+      <div style="max-width:960px;margin:0 auto;">
+        <span style="color:#C89467;font-family:monospace;font-size:0.75rem;font-weight:bold;text-transform:uppercase;">Dúvidas Frequentes</span>
+        <h2 style="font-size:2rem;font-weight:700;color:#FFF;margin:0.5rem 0 2rem 0;">Perguntas Frequentes Sobre Obras no Litoral</h2>
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+          <div style="background:#141312;border:1px solid rgba(255,255,255,0.1);border-radius:1rem;padding:1.5rem;">
+            <h3 style="color:#FFF;font-size:1.125rem;font-weight:bold;margin-bottom:0.5rem;">Vocês realizam obras do zero e reformas em Cabo Frio, Tamoios (Unamar) e Búzios?</h3>
+            <p style="color:#A8A29A;font-size:0.875rem;line-height:1.6;margin:0;">Sim. Atendemos toda a Região dos Lagos com equipes locais, incluindo Cabo Frio (centro, Ogiva, Peró e 2º Distrito em Tamoios/Unamar), Armação dos Búzios, Arraial do Cabo, São Pedro da Aldeia, Iguaba Grande e Rio das Ostras.</p>
+          </div>
+          <div style="background:#141312;border:1px solid rgba(255,255,255,0.1);border-radius:1rem;padding:1.5rem;">
+            <h3 style="color:#FFF;font-size:1.125rem;font-weight:bold;margin-bottom:0.5rem;">Como funciona o contrato de obra a preço fechado do Grupo Vitti?</h3>
+            <p style="color:#A8A29A;font-size:0.875rem;line-height:1.6;margin:0;">Elaboramos o orçamento executivo detalhado antes do início da obra, com cronograma físico-financeiro definido por etapas. Assim você sabe exatamente quanto vai investir do início à entrega das chaves, sem aditivos surpresa.</p>
+          </div>
+          <div style="background:#141312;border:1px solid rgba(255,255,255,0.1);border-radius:1rem;padding:1.5rem;">
+            <h3 style="color:#FFF;font-size:1.125rem;font-weight:bold;margin-bottom:0.5rem;">Moro fora da Região dos Lagos. Como faço para acompanhar minha obra à distância?</h3>
+            <p style="color:#A8A29A;font-size:0.875rem;line-height:1.6;margin:0;">Você recebe relatórios semanais diretamente no seu WhatsApp com fotos em alta resolução, vídeos de ensaios técnicos e medição física real do avanço de cada etapa, sem precisar viajar todo fim de semana.</p>
+          </div>
+          <div style="background:#141312;border:1px solid rgba(255,255,255,0.1);border-radius:1rem;padding:1.5rem;">
+            <h3 style="color:#FFF;font-size:1.125rem;font-weight:bold;margin-bottom:0.5rem;">Qual o diferencial técnico das obras do Grupo Vitti contra maresia e umidade?</h3>
+            <p style="color:#A8A29A;font-size:0.875rem;line-height:1.6;margin:0;">Aplicamos rigorosamente as normas de agressividade marinha (NBR 6118), com cobrimento adequado de armaduras, concreto estrutural dosado, impermeabilização de vigas baldrame contra lençol freático raso (muito comum em Cabo Frio e Tamoios) e especificação de esquadrias com padrão naval.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contato" style="padding:4rem 1.5rem;background:#141312;border-top:1px solid rgba(255,255,255,0.1);">
       <div style="max-width:1200px;margin:0 auto;text-align:center;">
         <h2 style="font-size:2rem;font-weight:700;color:#FFF;margin-bottom:1rem;">Tire seu projeto do papel com quem entende de litoral</h2>
-        <p style="color:#B8B2A7;max-width:600px;margin:0 auto 2rem auto;line-height:1.6;">
-          Atendimento técnico em Cabo Frio, Tamoios (2º Distrito), Búzios, Arraial do Cabo, São Pedro da Aldeia, Iguaba Grande e Rio das Ostras.
+        <p style="color:#B8B2A7;max-width:700px;margin:0 auto 2rem auto;line-height:1.6;">
+          Atendimento técnico em Cabo Frio (Braga, Peró, Ogiva) · Tamoios e Unamar (2º Distrito) · Búzios (Ferradura, Geribá, Manguinhos) · Arraial do Cabo (Pontal do Atalaia) · São Pedro da Aldeia · Iguaba Grande · Rio das Ostras.
         </p>
         <a href="${whatsappLink()}" style="background:#25D366;color:#0A2412;padding:1rem 2rem;border-radius:0.75rem;font-weight:bold;font-size:1.125rem;text-decoration:none;display:inline-block;">
           Falar Diretamente pelo WhatsApp (${CONFIG.whatsappDisplay})
@@ -161,7 +186,7 @@ function buildHomeSemanticHtml(): string {
 
   <footer style="background:#080707;color:#8A8479;padding:2rem 1.5rem;border-top:1px solid rgba(255,255,255,0.1);font-size:0.8125rem;text-align:center;">
     <p>CNPJ ${CONFIG.cnpj} · Grupo Vitti Construção, Reforma &amp; Tecnologia · Região dos Lagos (RJ)</p>
-    <p style="margin-top:0.5rem;color:#666;">Cabo Frio · Tamoios (2º Distrito) · Búzios · Arraial do Cabo · São Pedro da Aldeia · Iguaba Grande · Rio das Ostras</p>
+    <p style="margin-top:0.5rem;color:#666;">Cabo Frio (Braga, Peró, Ogiva) · Tamoios e Unamar (2º Distrito) · Búzios (Ferradura, Geribá, Manguinhos) · Arraial do Cabo (Pontal do Atalaia) · São Pedro da Aldeia · Iguaba Grande · Rio das Ostras</p>
   </footer>
   `;
 }

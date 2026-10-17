@@ -24,7 +24,7 @@ export const CONFIG = {
   regiao: 'Região dos Lagos (RJ)',
   cidades: [
     'Cabo Frio',
-    'Tamoios / Cabo Frio',
+    'Tamoios / Unamar - Cabo Frio',
     'Búzios',
     'Arraial do Cabo',
     'São Pedro da Aldeia',

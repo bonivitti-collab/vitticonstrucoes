@@ -86,10 +86,11 @@ export const VittiLogo: React.FC<VittiLogoProps> = ({
           xmlns="http://www.w3.org/2000/svg"
           className="h-7 sm:h-8 w-auto"
           role="img"
-          aria-label="Grupo Vitti"
+          aria-hidden="true"
         >
           {/* Architectural V Mark with Left Roof Cantilever */}
           <path
+            aria-hidden="true"
             d="M296 206L475 94L516 116L612 336L686 98H712L620 368H608L476 111L297 210L296 206Z"
             fill={fillColor}
           />
@@ -105,6 +106,25 @@ export const VittiLogo: React.FC<VittiLogoProps> = ({
           >
             GRUPO
           </text>
+          {/* Leitura contínua do Googlebot & Leitores de Tela: "GRUPO VITTI" */}
+          <foreignObject x="0" y="0" width="1" height="1">
+            <span
+              className="sr-only"
+              style={{
+                position: 'absolute',
+                width: '1px',
+                height: '1px',
+                padding: 0,
+                margin: '-1px',
+                overflow: 'hidden',
+                clip: 'rect(0,0,0,0)',
+                whiteSpace: 'nowrap',
+                border: 0,
+              }}
+            >
+              V
+            </span>
+          </foreignObject>
           {/* ITTI */}
           <text
             x="676"
@@ -137,10 +157,11 @@ export const VittiLogo: React.FC<VittiLogoProps> = ({
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       role="img"
-      aria-label="Grupo Vitti"
+      aria-hidden="true"
     >
       {/* Architectural V Mark with Left Roof Cantilever */}
       <path
+        aria-hidden="true"
         d="M296 206L475 94L516 116L612 336L686 98H712L620 368H608L476 111L297 210L296 206Z"
         fill={fillColor}
       />
@@ -156,6 +177,25 @@ export const VittiLogo: React.FC<VittiLogoProps> = ({
       >
         GRUPO
       </text>
+      {/* Leitura contínua do Googlebot & Leitores de Tela: "GRUPO VITTI" */}
+      <foreignObject x="0" y="0" width="1" height="1">
+        <span
+          className="sr-only"
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0,0,0,0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
+          V
+        </span>
+      </foreignObject>
       {/* ITTI */}
       <text
         x="676"
