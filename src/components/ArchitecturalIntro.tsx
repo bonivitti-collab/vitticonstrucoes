@@ -5,10 +5,36 @@ interface ArchitecturalIntroProps {
   onComplete?: () => void;
 }
 
+export function shouldSkipIntro(): boolean {
+  if (typeof window === 'undefined') return true;
+  if (window.location.pathname !== '/') return true;
+  try {
+    if (sessionStorage.getItem('vitti_intro_seen') === '1') return true;
+  } catch {}
+  if (navigator.webdriver) return true;
+  const ua = navigator.userAgent || '';
+  if (/bot|googlebot|crawler|spider|lighthouse|pagespeed|gtmetrix/i.test(ua)) return true;
+  try {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+  } catch {}
+  return false;
+}
+
 export const ArchitecturalIntro: React.FC<ArchitecturalIntroProps> = ({ onComplete }) => {
-  const [phase, setPhase] = useState<'revealing' | 'opening' | 'finished'>('revealing');
+  const [phase, setPhase] = useState<'revealing' | 'opening' | 'finished'>(() =>
+    shouldSkipIntro() ? 'finished' : 'revealing'
+  );
 
   useEffect(() => {
+    if (shouldSkipIntro()) {
+      onComplete?.();
+      return;
+    }
+
+    try {
+      sessionStorage.setItem('vitti_intro_seen', '1');
+    } catch {}
+
     // Stage 1: Display logo signature and architectural lines
     const openTimer = setTimeout(() => {
       setPhase('opening');

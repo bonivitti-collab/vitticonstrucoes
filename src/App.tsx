@@ -8,12 +8,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CONFIG, whatsappLink } from '../lib/config';
 import { VittiLogo } from './components/VittiLogo';
 import { ARTICLES, Article } from './data/articles';
-import { ArticleModal } from './components/ArticleModal';
 import { PROJECTS_MEMORIAL, ProjectMemorial } from './data/projectsData';
 import { ProjectMemorialModal } from './components/ProjectMemorialModal';
 import { WhatsAppIcon } from './components/WhatsAppIcon';
-import { ArchitecturalIntro } from './components/ArchitecturalIntro';
-import { SERVICES_LIST } from './data/servicesData';
+import { ArchitecturalIntro, shouldSkipIntro } from './components/ArchitecturalIntro';
+import { SERVICES_LIST, ServiceItem } from './data/servicesData';
+import { DedicatedGuidePage } from './components/DedicatedGuidePage';
+import { DedicatedServicePage } from './components/DedicatedServicePage';
 import {
   ArrowUpRight,
   ShieldCheck,
@@ -96,11 +97,71 @@ const FAQ_ITEMS = [
   },
 ];
 
+type CurrentRoute =
+  | { type: 'home' }
+  | { type: 'guide'; article: Article }
+  | { type: 'service'; service: ServiceItem };
+
+function getRouteFromPathname(): CurrentRoute {
+  if (typeof window === 'undefined') return { type: 'home' };
+  const path = window.location.pathname;
+  if (path.startsWith('/guias/')) {
+    const slug = path.replace('/guias/', '').replace(/\/$/, '');
+    const found = ARTICLES.find((a) => a.slug === slug);
+    if (found) return { type: 'guide', article: found };
+  }
+  if (path.startsWith('/servicos/')) {
+    const slug = path.replace('/servicos/', '').replace(/\/$/, '');
+    const found = SERVICES_LIST.find((s) => s.slug === slug);
+    if (found) return { type: 'service', service: found };
+  }
+  return { type: 'home' };
+}
+
+function syncRouteMetadata(route: CurrentRoute) {
+  if (typeof document === 'undefined') return;
+  if (route.type === 'guide') {
+    const art = route.article;
+    const pageTitle = `${art.title} — ${CONFIG.siteName}`;
+    document.title = pageTitle;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', art.subtitle);
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', `https://vitticonstrucoes.com.br/guias/${art.slug}`);
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', pageTitle);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', art.subtitle);
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://vitticonstrucoes.com.br/guias/${art.slug}`);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', pageTitle);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', art.subtitle);
+  } else if (route.type === 'service') {
+    const srv = route.service;
+    const pageTitle = `${srv.title} em Cabo Frio, Búzios e Tamoios — ${CONFIG.siteName}`;
+    document.title = pageTitle;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', srv.summary);
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', `https://vitticonstrucoes.com.br/servicos/${srv.slug}`);
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', pageTitle);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', srv.summary);
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://vitticonstrucoes.com.br/servicos/${srv.slug}`);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', pageTitle);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', srv.summary);
+  } else {
+    const homeTitle = 'Construtora, Reformas e Manutenção em Cabo Frio e Búzios | Grupo Vitti';
+    const homeDesc = 'Do reparo urgente à obra completa: pintura anti-maresia, elétrica, hidráulica com caça-vazamentos, piscinas, carpintaria, ar-condicionado, reformas e suporte para Airbnb em Cabo Frio, Tamoios (Unamar), Búzios e Região dos Lagos.';
+    document.title = homeTitle;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', homeDesc);
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', 'https://vitticonstrucoes.com.br/');
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', homeTitle);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', homeDesc);
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', 'https://vitticonstrucoes.com.br/');
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', homeTitle);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', homeDesc);
+  }
+}
+
 export default function App() {
-  const [introFinished, setIntroFinished] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [currentRoute, setCurrentRoute] = useState<CurrentRoute>(() => getRouteFromPathname());
+  const [introFinished, setIntroFinished] = useState(() => shouldSkipIntro());
   const [selectedProject, setSelectedProject] = useState<ProjectMemorial | null>(null);
   const [articleCategory, setArticleCategory] = useState<string>('all');
+  const [serviceCategory, setServiceCategory] = useState<string>('all');
 
   // Quick WhatsApp Lead Form
   const [clientName, setClientName] = useState('');
@@ -108,24 +169,12 @@ export default function App() {
   const [clientScope, setClientScope] = useState('Pintura Especializada & Anti-Maresia');
   const [clientMessage, setClientMessage] = useState('');
 
-  // Sincronização dinâmica de URL para os 15 Guias Práticos (SEO e navegação direta)
+  // Sincronização de rotas SPA
   useEffect(() => {
     const handleUrlRoute = () => {
-      const path = window.location.pathname;
-      if (path.startsWith('/guias/')) {
-        const slug = path.replace('/guias/', '').replace(/\/$/, '');
-        const found = ARTICLES.find((a) => a.slug === slug);
-        if (found) {
-          setSelectedArticle(found);
-          document.title = `${found.title} — ${CONFIG.siteName}`;
-          const metaDesc = document.querySelector('meta[name="description"]');
-          if (metaDesc) metaDesc.setAttribute('content', found.subtitle);
-          const canonical = document.querySelector('link[rel="canonical"]');
-          if (canonical) canonical.setAttribute('href', `https://vitticonstrucoes.com.br/guias/${found.slug}`);
-          return;
-        }
-      }
-      setSelectedArticle(null);
+      const r = getRouteFromPathname();
+      setCurrentRoute(r);
+      syncRouteMetadata(r);
     };
 
     handleUrlRoute();
@@ -133,34 +182,29 @@ export default function App() {
     return () => window.removeEventListener('popstate', handleUrlRoute);
   }, []);
 
-  const handleOpenArticle = (art: Article) => {
-    setSelectedArticle(art);
+  const navigateToHome = () => {
+    window.history.pushState(null, '', '/');
+    const r: CurrentRoute = { type: 'home' };
+    setCurrentRoute(r);
+    syncRouteMetadata(r);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const navigateToGuide = (art: Article) => {
     window.history.pushState({ articleSlug: art.slug }, '', `/guias/${art.slug}`);
-    document.title = `${art.title} — ${CONFIG.siteName}`;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute('content', art.subtitle);
-    const canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) canonical.setAttribute('href', `https://vitticonstrucoes.com.br/guias/${art.slug}`);
+    const r: CurrentRoute = { type: 'guide', article: art };
+    setCurrentRoute(r);
+    syncRouteMetadata(r);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const handleCloseArticle = () => {
-    setSelectedArticle(null);
-    if (window.location.pathname.startsWith('/guias/')) {
-      window.history.pushState(null, '', '/');
-    }
-    document.title = 'Grupo Vitti — Construção, Reformas & 13 Serviços na Região dos Lagos';
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute(
-        'content',
-        'Empresa de construção, reformas e 13 serviços especializados em Cabo Frio, Tamoios (Unamar), Búzios e Região dos Lagos. Da manutenção emergencial à chave na mão.'
-      );
-    }
-    const canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) canonical.setAttribute('href', 'https://vitticonstrucoes.com.br');
+  const navigateToService = (srv: ServiceItem) => {
+    window.history.pushState({ serviceSlug: srv.slug }, '', `/servicos/${srv.slug}`);
+    const r: CurrentRoute = { type: 'service', service: srv };
+    setCurrentRoute(r);
+    syncRouteMetadata(r);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
-
-  const [serviceCategory, setServiceCategory] = useState<string>('all');
 
   const filteredServices = SERVICES_LIST.filter((srv) => {
     return serviceCategory === 'all' || srv.category === serviceCategory;
@@ -201,11 +245,34 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
     window.open(whatsappLink(text), '_blank');
   };
 
+  // Se a rota for um Guia Prático dedicado
+  if (currentRoute.type === 'guide') {
+    return (
+      <DedicatedGuidePage
+        article={currentRoute.article}
+        onBackToHome={navigateToHome}
+        onSelectGuide={navigateToGuide}
+        onSelectService={navigateToService}
+      />
+    );
+  }
 
+  // Se a rota for um Serviço Especializado dedicado
+  if (currentRoute.type === 'service') {
+    return (
+      <DedicatedServicePage
+        service={currentRoute.service}
+        onBackToHome={navigateToHome}
+        onSelectGuide={navigateToGuide}
+        onSelectService={navigateToService}
+      />
+    );
+  }
 
+  // Renderização da Página Inicial (Home)
   return (
     <div className="min-h-screen bg-[#0D0C0B] text-[#F5F2EB] selection:bg-[#C89467] selection:text-[#0D0C0B] font-sans antialiased">
-      {/* ─── ENTRADA ARQUITETÔNICA ULTRA-PREMIUM (CORTINA + ASSINATURA VETORIAL) ─── */}
+      {/* ─── ENTRADA ARQUITETÔNICA OTIMIZADA (IGNORADA PARA BOTS E REVISITAS) ─── */}
       {!introFinished && <ArchitecturalIntro onComplete={() => setIntroFinished(true)} />}
 
       {/* ═══════════════════════════════════════════════════════════════════
@@ -216,9 +283,13 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
           {/* Logo Lockup Oficial */}
           <div className="flex-1 flex items-center justify-start">
             <a
-              href="#"
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateToHome();
+              }}
               className="flex items-center group focus-visible:outline-none"
-              aria-label="Grupo Vitti — Construção, Reforma e Tecnologia"
+              aria-label="Grupo Vitti — Construtora, Reformas e Manutenção"
             >
               <VittiLogo
                 variant="official-with-subtitle"
@@ -240,7 +311,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               13 Serviços
             </a>
             <a href="#obras" className="hover:text-white transition-colors">
-              Conceito & Obras
+              Conceito &amp; Obras
             </a>
             <a
               href="#artigos"
@@ -266,7 +337,6 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               aria-label="Conversar no WhatsApp"
               className="relative overflow-hidden inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-[#0A2412] font-bold text-xs sm:text-sm whitespace-nowrap whatsapp-pulse-btn transition-colors"
             >
-              {/* Efeito de brilho passando periodicamente */}
               <span
                 aria-hidden="true"
                 className="absolute inset-0 pointer-events-none overflow-hidden rounded-full"
@@ -280,7 +350,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
           </div>
         </div>
 
-        {/* Mobile & Tablet Apparent Quick-Navigation Strip with Visible Scrollbar */}
+        {/* Mobile Quick-Navigation Strip */}
         <div className="lg:hidden border-t border-white/10 bg-[#0D0C0B]/95 px-4 pt-2 pb-2.5 menu-scrollbar">
           <nav aria-label="Navegação Rápida" className="flex items-center gap-1.5 sm:gap-2 min-w-max md:min-w-0 md:justify-center pb-1">
             <a
@@ -299,13 +369,13 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               href="#obras"
               className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#B8B2A7] hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-all"
             >
-              Conceito & Obras
+              Conceito &amp; Obras
             </a>
             <a
               href="#artigos"
               className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#E8C29E] bg-[#C89467]/10 border border-[#C89467]/25 hover:bg-[#C89467]/20 transition-all flex items-center gap-1"
             >
-              <Sparkles className="w-3 h-3 text-[#C89467]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#C89467]" />
               <span>15 Guias</span>
             </a>
             <a
@@ -324,12 +394,12 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
         </div>
       </header>
 
+      {/* ═══════════════════════════════════════════════════════════════════
+          MAIN CONTENT AREA
+         ═══════════════════════════════════════════════════════════════════ */}
       <main>
-        {/* ═══════════════════════════════════════════════════════════════════
-            HERO: High-Impact Entrance Animation with Direct Reassurance
-           ═══════════════════════════════════════════════════════════════════ */}
+        {/* ─── HERO SECTION: High-Intent SEO Commercial Terms ─── */}
         <section className="relative pt-12 pb-20 sm:pt-20 sm:pb-28 overflow-hidden">
-          {/* Subtle architectural ambient backdrop */}
           <div className="absolute inset-0 pointer-events-none opacity-30">
             <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[550px] bg-gradient-to-b from-[#C89467]/25 to-transparent blur-[120px] rounded-full" />
           </div>
@@ -351,16 +421,15 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
 
               {/* Main Headline */}
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.12]">
-                Do reparo urgente à obra completa:{' '}
+                Construção, Reformas e Manutenção Residencial{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8C29E] via-[#C89467] to-[#A86F3D]">
-                  o ecossistema de serviços da Região dos Lagos.
+                  em Cabo Frio, Búzios e Região dos Lagos.
                 </span>
               </h1>
 
               {/* Subheadline */}
               <p className="text-base sm:text-xl text-[#B8B2A7] max-w-3xl mx-auto leading-relaxed">
-                Pintura anti-maresia, elétrica, hidráulica, piscinas, ar-condicionado, reformas e suporte para Airbnb.
-                Atendimento rápido com preço fechado, garantia técnica e relatórios digitais no seu celular.
+                Do reparo urgente à obra completa: pintura anti-maresia, elétrica, hidráulica com caça-vazamentos, piscinas, carpintaria, ar-condicionado, obras chave na mão e suporte expresso para Airbnb. Equipe própria, garantia técnica e relatórios digitais no seu celular.
               </p>
 
               {/* Action Buttons */}
@@ -388,15 +457,15 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                   <div className="text-xs text-[#8A8479] mt-1">Equipes locais ágeis para socorro e manutenções</div>
                 </div>
                 <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center flex flex-col items-center justify-center">
+                  <div className="text-xs font-mono text-[#C89467] font-semibold">BLINDAGEM MARESIA</div>
+                  <div className="text-xs text-[#8A8479] mt-1">Materiais e técnicas específicas para o litoral</div>
+                </div>
+                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center flex flex-col items-center justify-center">
                   <div className="text-xs font-mono text-[#C89467] font-semibold">PREÇO FECHADO</div>
-                  <div className="text-xs text-[#8A8479] mt-1">Orçamento claro sem surpresas nem aditivos</div>
+                  <div className="text-xs text-[#8A8479] mt-1">Sem surpresas ou aditivos abusivos no final</div>
                 </div>
                 <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center flex flex-col items-center justify-center">
-                  <div className="text-xs font-mono text-[#C89467] font-semibold">ANTI-MARESIA</div>
-                  <div className="text-xs text-[#8A8479] mt-1">Materiais e técnicas que resistem ao salitre costeiro</div>
-                </div>
-                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center flex flex-col items-center justify-center">
-                  <div className="text-xs font-mono text-[#C89467] font-semibold">ACOMPANHE DE LONGE</div>
+                  <div className="text-xs font-mono text-[#C89467] font-semibold">GESTÃO À DISTÂNCIA</div>
                   <div className="text-xs text-[#8A8479] mt-1">Fotos e vídeos semanais direto no seu celular</div>
                 </div>
               </div>
@@ -419,7 +488,6 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  // Fallback to stylized dark architectural pattern if external CDN fails
                   (e.target as HTMLElement).style.display = 'none';
                 }}
               />
@@ -481,7 +549,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                   <p>
                     Nosso trabalho é unir o que há de melhor em técnicas construtivas para o litoral com
                     uma postura de respeito absoluto pelo dinheiro e pelo tempo do cliente. Cada
-                    obra tem contrato formal, garantia e uma equipe dedicada que
+                    serviço e obra tem contrato formal, garantia e uma equipe dedicada que
                     combina seriedade no canteiro com tecnologia de ponta.
                   </p>
                 </div>
@@ -613,7 +681,16 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                           {srv.category}
                         </div>
                         <h3 className="text-xl font-bold text-white group-hover:text-[#E8C29E] transition-colors leading-snug">
-                          {srv.title}
+                          <a
+                            href={`/servicos/${srv.slug}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigateToService(srv);
+                            }}
+                            className="hover:underline focus-visible:outline-none"
+                          >
+                            {srv.title}
+                          </a>
                         </h3>
                       </div>
 
@@ -635,7 +712,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-white/10">
+                    <div className="pt-4 border-t border-white/10 space-y-2">
                       <a
                         href={whatsappLink(srv.whatsappMsg)}
                         target="_blank"
@@ -644,6 +721,17 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                       >
                         <span>Pedir Orçamento no WhatsApp</span>
                         <ArrowUpRight className="w-4 h-4" />
+                      </a>
+                      <a
+                        href={`/servicos/${srv.slug}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigateToService(srv);
+                        }}
+                        className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-semibold text-[#E8C29E] hover:text-white hover:bg-white/5 transition-colors"
+                      >
+                        <span>Ver página técnica do serviço</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
                       </a>
                     </div>
                   </div>
@@ -660,7 +748,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
             <div className="max-w-3xl mx-auto text-center mb-16 space-y-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#C89467]/10 border border-[#C89467]/20 text-xs font-mono tracking-wider uppercase text-[#C89467]">
-                Acervo & Conceito Visual
+                Acervo &amp; Conceito Visual
               </div>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
                 Arquitetura costeira contemporânea e solidez construtiva.
@@ -707,7 +795,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                     </div>
 
                     <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-semibold text-[#E8C29E] group-hover:text-white transition-colors">
-                      <span>Ver Memorial & Especificações Técnicas</span>
+                      <span>Ver Memorial &amp; Especificações Técnicas</span>
                       <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
                   </div>
@@ -759,12 +847,12 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               </div>
             </div>
 
-            {/* 10 Articles Grid */}
+            {/* 15 Articles Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredArticles.map((art) => (
                 <article
                   key={art.id}
-                  onClick={() => handleOpenArticle(art)}
+                  onClick={() => navigateToGuide(art)}
                   className="p-6 rounded-2xl bg-[#141312] border border-white/10 hover:border-[#C89467]/60 transition-all cursor-pointer flex flex-col justify-between group hover:-translate-y-1 duration-200"
                 >
                   <div className="space-y-4">
@@ -781,7 +869,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                         href={`/guias/${art.slug}`}
                         onClick={(e) => {
                           e.preventDefault();
-                          handleOpenArticle(art);
+                          navigateToGuide(art);
                         }}
                         className="hover:underline focus-visible:outline-none"
                       >
@@ -850,52 +938,53 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                 Tem uma dúvida específica sobre o solo ou topografia do seu terreno?
               </div>
               <a
-                href={whatsappLink('Olá! Li o FAQ no site e gostaria de tirar uma dúvida técnica sobre meu terreno na Região dos Lagos.')}
+                href={whatsappLink('Olá! Gostaria de tirar uma dúvida técnica sobre meu terreno / imóvel na Região dos Lagos.')}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25D366] text-[#0A2412] font-semibold text-xs sm:text-sm hover:brightness-110 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-semibold text-white transition-all whitespace-nowrap"
               >
-                <span>Tirar Dúvida no WhatsApp</span>
-                <ArrowUpRight className="w-4 h-4" />
+                <span>Falar com Engenheiro</span>
+                <ArrowUpRight className="w-4 h-4 text-[#C89467]" />
               </a>
             </div>
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════════
-            CONTATO RÁPIDO & WHATSAPP DIRETO
+            CONTATO & ESTIMADOR RÁPIDO WHATSAPP
            ═══════════════════════════════════════════════════════════════════ */}
         <section id="contato" className="py-20 sm:py-28 bg-[#0D0C0B] border-t border-white/10">
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-              {/* Left 5 cols: Direct Information */}
-              <div className="lg:col-span-5 space-y-6">
-                <div className="text-xs font-mono tracking-wider uppercase text-[#C89467]">
-                  Fale Conosco
+              {/* Left 5 cols: Value Proposition & Direct Contact Details */}
+              <div className="lg:col-span-5 space-y-8">
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#C89467]/10 border border-[#C89467]/20 text-xs font-mono tracking-wider uppercase text-[#C89467]">
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Inicie sua Conversa</span>
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                    Vamos conversar sobre o seu projeto ou serviço?
+                  </h2>
+                  <p className="text-sm sm:text-base text-[#B8B2A7] leading-relaxed">
+                    Você fala diretamente com a equipe técnica do Grupo Vitti, sem intermediários.
+                    Damos estimativas realistas de custo e prazo para sua casa em toda a Região dos Lagos.
+                  </p>
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight">
-                  Tire seu projeto do papel com quem entende de litoral.
-                </h2>
-
-                <p className="text-sm text-[#B8B2A7] leading-relaxed">
-                  Envie sua mensagem ou chame direto no WhatsApp para tirar dúvidas,
-                  combinar uma conversa sobre o terreno ou pedir um orçamento direto comigo.
-                </p>
-
-                <div className="space-y-4 pt-4 border-t border-white/10">
+                <div className="space-y-4 pt-2">
                   <a
                     href={whatsappLink()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/10 hover:border-[#25D366] transition-colors group"
+                    className="flex items-center gap-4 p-4 rounded-xl bg-[#25D366]/10 border border-[#25D366]/20 hover:border-[#25D366]/50 transition-colors group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-[#25D366]/10 text-[#25D366] flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-lg bg-[#25D366] text-[#0A2412] flex items-center justify-center shrink-0">
                       <WhatsAppIcon className="w-5 h-5 fill-current" />
                     </div>
                     <div>
-                      <div className="text-xs text-[#8A8479]">WhatsApp & Telefone</div>
-                      <div className="text-sm font-bold text-white group-hover:text-[#25D366] transition-colors font-mono">
+                      <div className="text-xs text-[#8A8479]">Atendimento Imediato via WhatsApp</div>
+                      <div className="text-sm font-bold text-white font-mono">
                         {CONFIG.whatsappDisplay}
                       </div>
                     </div>
@@ -933,10 +1022,10 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               <div className="lg:col-span-7 bg-[#141312] border border-white/10 rounded-2xl p-6 sm:p-10 space-y-6">
                 <div className="space-y-1">
                   <h3 className="text-xl font-bold text-white">
-                    Fale Direto Comigo
+                    Fale Direto Conosco
                   </h3>
                   <p className="text-xs sm:text-sm text-[#8A8479]">
-                    Preencha os campos abaixo para conversar comigo no WhatsApp sem compromisso.
+                    Preencha os campos abaixo para conversar no WhatsApp sem compromisso.
                   </p>
                 </div>
 
@@ -958,7 +1047,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
 
                     <div>
                       <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
-                        Cidade da Obra
+                        Cidade da Obra ou Serviço
                       </label>
                       <select
                         value={clientCity}
@@ -985,51 +1074,51 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                       onChange={(e) => setClientScope(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl bg-[#1C1A18] border border-white/10 text-sm text-white focus:outline-none focus:border-[#C89467]"
                     >
-                      <optgroup label="Reparos & Instalações Rápidas">
+                      <optgroup label="Reparos &amp; Instalações Rápidas">
                         <option value="Pintura Especializada & Anti-Maresia">
-                          Pintura Especializada & Proteção Anti-Maresia
+                          Pintura Especializada &amp; Proteção Anti-Maresia
                         </option>
                         <option value="Hidráulica & Caça-Vazamentos">
-                          Hidráulica & Caça-Vazamentos
+                          Hidráulica &amp; Caça-Vazamentos
                         </option>
                         <option value="Elétrica Residencial & Náutica">
-                          Elétrica Residencial & Náutica
+                          Elétrica Residencial &amp; Náutica
                         </option>
                         <option value="Instalação & Manutenção de Ar-Condicionado">
-                          Instalação & Manutenção de Ar-Condicionado
+                          Instalação &amp; Manutenção de Ar-Condicionado
                         </option>
                         <option value="Ladrilheiro, Porcelanatos & Revestimentos">
-                          Ladrilheiro, Porcelanatos & Revestimentos
+                          Ladrilheiro, Porcelanatos &amp; Revestimentos
                         </option>
                         <option value="Carpintaria, Telhados & Decks">
-                          Carpintaria, Telhados & Decks
+                          Carpintaria, Telhados &amp; Decks
                         </option>
                       </optgroup>
-                      <optgroup label="Manutenção Periódica & Lazer">
+                      <optgroup label="Manutenção Periódica &amp; Lazer">
                         <option value="Limpeza & Tratamento de Piscina">
-                          Limpeza & Tratamento de Piscina
+                          Limpeza &amp; Tratamento de Piscina
                         </option>
                         <option value="Jardinagem & Paisagismo Litorâneo">
-                          Jardinagem & Paisagismo Litorâneo
+                          Jardinagem &amp; Paisagismo Litorâneo
                         </option>
                         <option value="Limpeza Geral Pós-Obra & Faxina Técnica">
-                          Limpeza Geral Pós-Obra & Faxina Técnica
+                          Limpeza Geral Pós-Obra &amp; Faxina Técnica
                         </option>
                       </optgroup>
-                      <optgroup label="Airbnb & Casas de Temporada">
+                      <optgroup label="Airbnb &amp; Casas de Temporada">
                         <option value="Gestão de Airbnb & Manutenção Preventiva Expressa">
-                          Gestão de Airbnb & Manutenção Preventiva Expressa
+                          Gestão de Airbnb &amp; Manutenção Preventiva Expressa
                         </option>
                       </optgroup>
-                      <optgroup label="Obras & Reformas">
+                      <optgroup label="Obras &amp; Reformas">
                         <option value="Construção Residencial Completa (Chave na Mão)">
                           Construção Residencial Completa (Chave na Mão)
                         </option>
                         <option value="Reforma Geral & Retrofit">
-                          Reforma Geral & Retrofit
+                          Reforma Geral &amp; Retrofit
                         </option>
                         <option value="Acompanhamento Técnico & Vistoria de Obras">
-                          Acompanhamento Técnico & Vistoria de Obras
+                          Acompanhamento Técnico &amp; Vistoria de Obras
                         </option>
                         <option value="Outro Serviço ou Projeto Especial">
                           Outro Serviço ou Projeto Especial
@@ -1046,7 +1135,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                       rows={3}
                       value={clientMessage}
                       onChange={(e) => setClientMessage(e.target.value)}
-                      placeholder="Ex.: Tenho terreno de 400m² em condomínio e gostaria de uma estimativa de prazo e etapas..."
+                      placeholder="Ex.: Preciso de manutenção de piscina e revisão elétrica na minha casa em Búzios..."
                       className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#C89467]"
                     />
                   </div>
@@ -1078,9 +1167,13 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/10">
             <div className="flex flex-col items-start gap-1">
               <a
-                href="#"
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateToHome();
+                }}
                 className="flex items-center group focus-visible:outline-none"
-                aria-label="Grupo Vitti — Construção, Reforma e Tecnologia"
+                aria-label="Grupo Vitti — Construtora, Reformas e Manutenção"
               >
                 <VittiLogo variant="official-with-subtitle" theme="light" />
               </a>
@@ -1126,16 +1219,6 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
           </div>
         </div>
       </footer>
-
-      {/* Interactive Article Reading Modal */}
-      <AnimatePresence>
-        {selectedArticle && (
-          <ArticleModal
-            article={selectedArticle}
-            onClose={handleCloseArticle}
-          />
-        )}
-      </AnimatePresence>
 
       {/* Interactive Project Memorial Technical Modal */}
       <AnimatePresence>

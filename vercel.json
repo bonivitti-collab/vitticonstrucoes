@@ -8,6 +8,10 @@
       "destination": "/guias/:slug/index.html"
     },
     {
+      "source": "/servicos/:slug",
+      "destination": "/servicos/:slug/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
