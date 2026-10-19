@@ -12,6 +12,14 @@
       "destination": "/servicos/:slug/index.html"
     },
     {
+      "source": "/atuacao/:slug",
+      "destination": "/atuacao/:slug/index.html"
+    },
+    {
+      "source": "/obras/:slug",
+      "destination": "/obras/:slug/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

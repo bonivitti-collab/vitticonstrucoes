@@ -13,8 +13,11 @@ import { ProjectMemorialModal } from './components/ProjectMemorialModal';
 import { WhatsAppIcon } from './components/WhatsAppIcon';
 import { ArchitecturalIntro, shouldSkipIntro } from './components/ArchitecturalIntro';
 import { SERVICES_LIST, ServiceItem } from './data/servicesData';
+import { LOCATIONS_LIST, LocationItem } from './data/locationsData';
 import { DedicatedGuidePage } from './components/DedicatedGuidePage';
 import { DedicatedServicePage } from './components/DedicatedServicePage';
+import { DedicatedLocationPage } from './components/DedicatedLocationPage';
+import { DedicatedProjectPage } from './components/DedicatedProjectPage';
 import {
   ArrowUpRight,
   ShieldCheck,
@@ -100,7 +103,9 @@ const FAQ_ITEMS = [
 type CurrentRoute =
   | { type: 'home' }
   | { type: 'guide'; article: Article }
-  | { type: 'service'; service: ServiceItem };
+  | { type: 'service'; service: ServiceItem }
+  | { type: 'location'; location: LocationItem }
+  | { type: 'project'; project: ProjectMemorial };
 
 function getRouteFromPathname(): CurrentRoute {
   if (typeof window === 'undefined') return { type: 'home' };
@@ -114,6 +119,16 @@ function getRouteFromPathname(): CurrentRoute {
     const slug = path.replace('/servicos/', '').replace(/\/$/, '');
     const found = SERVICES_LIST.find((s) => s.slug === slug);
     if (found) return { type: 'service', service: found };
+  }
+  if (path.startsWith('/atuacao/')) {
+    const slug = path.replace('/atuacao/', '').replace(/\/$/, '');
+    const found = LOCATIONS_LIST.find((l) => l.slug === slug);
+    if (found) return { type: 'location', location: found };
+  }
+  if (path.startsWith('/obras/')) {
+    const slug = path.replace('/obras/', '').replace(/\/$/, '');
+    const found = PROJECTS_MEMORIAL.find((p) => p.slug === slug || p.id === slug);
+    if (found) return { type: 'project', project: found };
   }
   return { type: 'home' };
 }
@@ -142,6 +157,29 @@ function syncRouteMetadata(route: CurrentRoute) {
     document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://vitticonstrucoes.com.br/servicos/${srv.slug}`);
     document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', pageTitle);
     document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', srv.summary);
+  } else if (route.type === 'location') {
+    const loc = route.location;
+    const pageTitle = `${loc.title} | ${CONFIG.siteName}`;
+    document.title = pageTitle;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', loc.metaDescription);
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', `https://vitticonstrucoes.com.br/atuacao/${loc.slug}`);
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', pageTitle);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', loc.metaDescription);
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://vitticonstrucoes.com.br/atuacao/${loc.slug}`);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', pageTitle);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', loc.metaDescription);
+  } else if (route.type === 'project') {
+    const proj = route.project;
+    const pageTitle = `${proj.title} — Memorial Técnico | ${CONFIG.siteName}`;
+    const pageDesc = `${proj.type} em ${proj.city}. ${proj.tag}. Memorial descritivo de engenharia costeira com Fck, impermeabilização e esquadrias navais.`;
+    document.title = pageTitle;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', pageDesc);
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', `https://vitticonstrucoes.com.br/obras/${proj.slug}`);
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', pageTitle);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', pageDesc);
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://vitticonstrucoes.com.br/obras/${proj.slug}`);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', pageTitle);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', pageDesc);
   } else {
     const homeTitle = 'Construtora, Reformas e Manutenção em Cabo Frio e Búzios | Grupo Vitti';
     const homeDesc = 'Do reparo urgente à obra completa: pintura anti-maresia, elétrica, hidráulica com caça-vazamentos, piscinas, carpintaria, ar-condicionado, reformas e suporte para Airbnb em Cabo Frio, Tamoios (Unamar), Búzios e Região dos Lagos.';
@@ -206,6 +244,22 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
+  const navigateToLocation = (loc: LocationItem) => {
+    window.history.pushState({ locationSlug: loc.slug }, '', `/atuacao/${loc.slug}`);
+    const r: CurrentRoute = { type: 'location', location: loc };
+    setCurrentRoute(r);
+    syncRouteMetadata(r);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
+  const navigateToProject = (proj: ProjectMemorial) => {
+    window.history.pushState({ projectSlug: proj.slug }, '', `/obras/${proj.slug}`);
+    const r: CurrentRoute = { type: 'project', project: proj };
+    setCurrentRoute(r);
+    syncRouteMetadata(r);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
   const filteredServices = SERVICES_LIST.filter((srv) => {
     return serviceCategory === 'all' || srv.category === serviceCategory;
   });
@@ -253,6 +307,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
         onBackToHome={navigateToHome}
         onSelectGuide={navigateToGuide}
         onSelectService={navigateToService}
+        onSelectLocation={navigateToLocation}
       />
     );
   }
@@ -265,6 +320,34 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
         onBackToHome={navigateToHome}
         onSelectGuide={navigateToGuide}
         onSelectService={navigateToService}
+        onSelectLocation={navigateToLocation}
+      />
+    );
+  }
+
+  // Se a rota for uma Cidade/Polo dedicado
+  if (currentRoute.type === 'location') {
+    return (
+      <DedicatedLocationPage
+        location={currentRoute.location}
+        onBackToHome={navigateToHome}
+        onSelectLocation={navigateToLocation}
+        onSelectService={navigateToService}
+        onSelectGuide={navigateToGuide}
+      />
+    );
+  }
+
+  // Se a rota for um Memorial de Obra dedicado
+  if (currentRoute.type === 'project') {
+    return (
+      <DedicatedProjectPage
+        project={currentRoute.project}
+        onBackToHome={navigateToHome}
+        onSelectProject={navigateToProject}
+        onSelectService={navigateToService}
+        onSelectGuide={navigateToGuide}
+        onSelectLocation={navigateToLocation}
       />
     );
   }
@@ -763,7 +846,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               {PROJECTS_MEMORIAL.map((item) => (
                 <div
                   key={item.id}
-                  onClick={() => setSelectedProject(item)}
+                  onClick={() => navigateToProject(item)}
                   className="rounded-2xl overflow-hidden border border-white/10 bg-[#0D0C0B] flex flex-col group hover:border-[#C89467]/60 hover:shadow-xl hover:shadow-[#C89467]/5 transition-all cursor-pointer hover:-translate-y-1 duration-200"
                 >
                   <div className="aspect-[4/3] overflow-hidden relative">
@@ -789,14 +872,32 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                     <div>
                       <div className="text-xs font-mono text-[#C89467]">{item.type}</div>
                       <h3 className="text-lg font-bold text-white group-hover:text-[#E8C29E] transition-colors mt-1 leading-snug">
-                        {item.title}
+                        <a
+                          href={`/obras/${item.slug}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigateToProject(item);
+                          }}
+                          className="hover:underline focus-visible:outline-none"
+                        >
+                          {item.title}
+                        </a>
                       </h3>
                       <div className="text-xs text-[#8A8479] mt-1.5">{item.tag}</div>
                     </div>
 
                     <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs font-semibold text-[#E8C29E] group-hover:text-white transition-colors">
-                      <span>Ver Memorial &amp; Especificações Técnicas</span>
-                      <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      <a
+                        href={`/obras/${item.slug}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigateToProject(item);
+                        }}
+                        className="flex items-center justify-between w-full"
+                      >
+                        <span>Ver Memorial &amp; Especificações Técnicas</span>
+                        <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -1209,12 +1310,32 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#666]">
+          {/* Links Internos Reais para as 7 Cidades (Teia Territorial) */}
+          <div className="border-t border-white/5 pt-4">
+            <p className="text-xs text-[#A8A29A] mb-2 font-mono">Cobertura Territorial Oficial na Região dos Lagos:</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+              {LOCATIONS_LIST.map((loc) => (
+                <a
+                  key={loc.slug}
+                  href={`/atuacao/${loc.slug}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateToLocation(loc);
+                  }}
+                  className="text-[#C89467] hover:underline"
+                >
+                  {loc.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#666] border-t border-white/5 pt-4">
             <div>
               © {new Date().getFullYear()} {CONFIG.siteName}. Todos os direitos reservados.
             </div>
-            <div className="text-center sm:text-right">
-              Atendimento em Cabo Frio (Braga, Peró, Ogiva) · Tamoios e Unamar (2º Distrito) · Búzios (Ferradura, Geribá, Manguinhos) · Arraial do Cabo (Pontal do Atalaia) · São Pedro da Aldeia · Iguaba Grande · Rio das Ostras
+            <div>
+              Engenharia, Reformas, Pintura Anti-Maresia &amp; Manutenção
             </div>
           </div>
         </div>

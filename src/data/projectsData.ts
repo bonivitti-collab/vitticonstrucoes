@@ -1,5 +1,6 @@
 export interface ProjectMemorial {
   id: string;
+  slug: string;
   city: string;
   title: string;
   type: string;
@@ -30,6 +31,7 @@ export interface ProjectMemorial {
 export const PROJECTS_MEMORIAL: ProjectMemorial[] = [
   {
     id: 'mirante-da-ferradura',
+    slug: 'mirante-da-ferradura',
     city: 'Búzios',
     title: 'Residência Mirante da Ferradura',
     type: 'Construção Turnkey · 540 m²',
@@ -85,6 +87,7 @@ export const PROJECTS_MEMORIAL: ProjectMemorial[] = [
   },
   {
     id: 'casa-patio-das-dunas',
+    slug: 'casa-patio-das-dunas',
     city: 'Cabo Frio & Tamoios',
     title: 'Casa Pátio das Dunas',
     type: 'Residência Unifamiliar · 385 m²',
@@ -141,6 +144,7 @@ export const PROJECTS_MEMORIAL: ProjectMemorial[] = [
   },
   {
     id: 'pavilhao-costeiro-pontal',
+    slug: 'pavilhao-costeiro-pontal',
     city: 'Arraial do Cabo',
     title: 'Pavilhão Costeiro Pontal',
     type: 'Estrutura em Encosta · 410 m²',

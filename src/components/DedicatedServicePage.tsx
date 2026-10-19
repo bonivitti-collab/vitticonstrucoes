@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ServiceItem, SERVICES_LIST } from '../data/servicesData';
 import { Article, ARTICLES } from '../data/articles';
+import { LocationItem, LOCATIONS_LIST } from '../data/locationsData';
 import { CONFIG, whatsappLink } from '../../lib/config';
 import { VittiLogo } from './VittiLogo';
 import { WhatsAppIcon } from './WhatsAppIcon';
@@ -22,6 +23,7 @@ interface DedicatedServicePageProps {
   onBackToHome: () => void;
   onSelectGuide: (art: Article) => void;
   onSelectService: (srv: ServiceItem) => void;
+  onSelectLocation?: (loc: LocationItem) => void;
 }
 
 export const DedicatedServicePage: React.FC<DedicatedServicePageProps> = ({
@@ -29,6 +31,7 @@ export const DedicatedServicePage: React.FC<DedicatedServicePageProps> = ({
   onBackToHome,
   onSelectGuide,
   onSelectService,
+  onSelectLocation,
 }) => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
@@ -383,12 +386,34 @@ export const DedicatedServicePage: React.FC<DedicatedServicePageProps> = ({
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#666]">
+          {/* Links Internos Reais para as 7 Cidades */}
+          <div className="border-t border-white/5 pt-4">
+            <p className="text-xs text-[#A8A29A] mb-2 font-mono">Cobertura Territorial Oficial na Região dos Lagos:</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+              {LOCATIONS_LIST.map((loc) => (
+                <a
+                  key={loc.slug}
+                  href={`/atuacao/${loc.slug}`}
+                  onClick={(e) => {
+                    if (onSelectLocation) {
+                      e.preventDefault();
+                      onSelectLocation(loc);
+                    }
+                  }}
+                  className="text-[#C89467] hover:underline"
+                >
+                  {loc.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#666] border-t border-white/5 pt-4">
             <div>
               © {new Date().getFullYear()} {CONFIG.siteName}. Todos os direitos reservados.
             </div>
-            <div className="text-center sm:text-right">
-              Atendimento em Cabo Frio, Tamoios (Unamar), Búzios, Arraial do Cabo, São Pedro da Aldeia, Iguaba Grande e Rio das Ostras.
+            <div>
+              Engenharia, Reformas, Pintura Anti-Maresia &amp; Manutenção
             </div>
           </div>
         </div>
