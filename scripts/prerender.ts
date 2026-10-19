@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ARTICLES } from '../src/data/articles.ts';
 import { PROJECTS_MEMORIAL } from '../src/data/projectsData.ts';
+import { SERVICES_LIST } from '../src/data/servicesData.ts';
 import { CONFIG, whatsappLink } from '../lib/config.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -24,7 +25,7 @@ function formatDateISO(date: Date = new Date()): string {
   return date.toISOString().split('T')[0];
 }
 
-// 1. Gera o sitemap.xml com Home + 10 Guias
+// 1. Gera o sitemap.xml com Home + 15 Guias
 function generateSitemap(): void {
   const today = formatDateISO();
   const urls: { loc: string; lastmod: string; changefreq: string; priority: string }[] = [
@@ -72,9 +73,9 @@ function buildHomeSemanticHtml(): string {
       <a href="/" style="color:#FFF;text-decoration:none;font-weight:bold;font-size:1.25rem;">GRUPO VITTI</a>
       <nav style="display:flex;gap:1.5rem;font-size:0.875rem;">
         <a href="#sobre" style="color:#B8B2A7;text-decoration:none;">Sobre Nós</a>
-        <a href="#servicos" style="color:#B8B2A7;text-decoration:none;">Serviços</a>
+        <a href="#servicos" style="color:#B8B2A7;text-decoration:none;">13 Serviços</a>
         <a href="#obras" style="color:#B8B2A7;text-decoration:none;">Conceito &amp; Obras</a>
-        <a href="#artigos" style="color:#C89467;text-decoration:none;">10 Guias Práticos</a>
+        <a href="#artigos" style="color:#C89467;text-decoration:none;">15 Guias Práticos</a>
         <a href="#contato" style="color:#B8B2A7;text-decoration:none;">Contato</a>
       </nav>
       <a href="${whatsappLink()}" style="background:#25D366;color:#0A2412;padding:0.5rem 1rem;border-radius:9999px;font-weight:bold;text-decoration:none;font-size:0.875rem;">WhatsApp ${CONFIG.whatsappDisplay}</a>
@@ -84,17 +85,46 @@ function buildHomeSemanticHtml(): string {
   <main style="background:#0D0C0B;color:#F5F2EB;">
     <section style="padding:4rem 1.5rem;text-align:center;max-width:960px;margin:0 auto;">
       <p style="color:#C89467;font-family:monospace;font-size:0.875rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem;">
-        Região dos Lagos · Cabo Frio · Tamoios · Búzios · Arraial do Cabo
+        Ecossistema da Construção &amp; Manutenção · Região dos Lagos · Cabo Frio · Tamoios · Búzios · Arraial
       </p>
       <h1 style="font-size:2.5rem;line-height:1.2;font-weight:800;color:#FFFFFF;margin-bottom:1.5rem;">
-        Construção Residencial de Alto Padrão e Reformas com Preço Fechado e Blindagem Anti-Maresia
+        Do Reparo Urgente à Obra Completa: O Ecossistema de Serviços e Manutenção na Região dos Lagos
       </h1>
       <p style="font-size:1.125rem;color:#B8B2A7;line-height:1.6;margin-bottom:2rem;">
-        Assumimos sua obra completa no regime Turnkey (chave na mão): do estudo de viabilidade, sondagem e projeto executivo à entrega final das chaves. Orçamento analítico auditável e zero surpresas financeiras.
+        Pintura anti-maresia, elétrica, hidráulica com caça-vazamentos, manutenção de piscinas, carpintaria, ar-condicionado, reformas e suporte expresso para Airbnb. Equipe própria, garantia técnica e atendimento no mesmo dia.
       </p>
       <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-        <a href="#contato" style="background:#25D366;color:#0A2412;padding:0.875rem 1.75rem;border-radius:0.75rem;font-weight:bold;text-decoration:none;">Solicitar Orçamento de Engenharia</a>
-        <a href="#artigos" style="background:rgba(255,255,255,0.05);color:#FFF;border:1px solid rgba(255,255,255,0.15);padding:0.875rem 1.75rem;border-radius:0.75rem;text-decoration:none;">Consultar os 10 Guias Técnicos</a>
+        <a href="#servicos" style="background:#25D366;color:#0A2412;padding:0.875rem 1.75rem;border-radius:0.75rem;font-weight:bold;text-decoration:none;">Ver os 13 Serviços Especializados</a>
+        <a href="#artigos" style="background:rgba(255,255,255,0.05);color:#FFF;border:1px solid rgba(255,255,255,0.15);padding:0.875rem 1.75rem;border-radius:0.75rem;text-decoration:none;">Consultar os 15 Guias Técnicos</a>
+      </div>
+    </section>
+
+    <section id="servicos" style="padding:4rem 1.5rem;background:#141312;border-top:1px solid rgba(255,255,255,0.1);">
+      <div style="max-width:1200px;margin:0 auto;">
+        <div style="text-align:center;margin-bottom:2.5rem;">
+          <span style="color:#C89467;font-family:monospace;font-size:0.75rem;font-weight:bold;text-transform:uppercase;">Ecossistema de Soluções</span>
+          <h2 style="font-size:2rem;font-weight:700;color:#FFF;margin:0.5rem 0;">13 Serviços Especializados para Sua Casa ou Pousada</h2>
+          <p style="color:#B8B2A7;max-width:700px;margin:0 auto;">Atendimento técnico com profissionais qualificados, garantia formal e preço justo em toda a Região dos Lagos.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+          ${SERVICES_LIST.map(
+            (srv) => `
+            <div style="background:#0D0C0B;border:1px solid rgba(255,255,255,0.1);border-radius:1rem;padding:1.5rem;display:flex;flex-direction:column;justify-content:space-between;">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+                  <span style="color:#C89467;font-family:monospace;font-size:0.75rem;font-weight:bold;">${escapeHtml(srv.num)} · ${escapeHtml(srv.category)}</span>
+                  <span style="background:rgba(200,148,103,0.15);color:#C89467;font-size:0.6875rem;padding:0.25rem 0.5rem;border-radius:0.375rem;font-weight:600;">${escapeHtml(srv.badge)}</span>
+                </div>
+                <h3 style="color:#FFF;font-size:1.125rem;font-weight:bold;margin:0 0 0.5rem 0;">${escapeHtml(srv.title)}</h3>
+                <p style="color:#A8A29A;font-size:0.8125rem;line-height:1.5;margin-bottom:1rem;">${escapeHtml(srv.subtitle)}</p>
+                <ul style="color:#8A8479;font-size:0.75rem;padding-left:1.25rem;margin-bottom:1.5rem;line-height:1.6;">
+                  ${srv.bullets.map((b) => `<li>${escapeHtml(b)}</li>`).join('')}
+                </ul>
+              </div>
+              <a href="${whatsappLink(srv.whatsappMsg)}" style="background:#25D366;color:#0A2412;padding:0.625rem 1rem;border-radius:0.5rem;font-weight:bold;font-size:0.8125rem;text-decoration:none;text-align:center;">Pedir Orçamento no WhatsApp</a>
+            </div>`
+          ).join('')}
+        </div>
       </div>
     </section>
 
@@ -128,7 +158,7 @@ function buildHomeSemanticHtml(): string {
 
     <section id="artigos" style="padding:4rem 1.5rem;background:#141312;border-top:1px solid rgba(255,255,255,0.1);">
       <div style="max-width:1200px;margin:0 auto;">
-        <h2 style="font-size:1.875rem;font-weight:700;color:#FFF;margin-bottom:0.5rem;">Os 10 Guias Práticos de Engenharia para a Região dos Lagos</h2>
+        <h2 style="font-size:1.875rem;font-weight:700;color:#FFF;margin-bottom:0.5rem;">Os 15 Guias Práticos de Engenharia e Serviços para a Região dos Lagos</h2>
         <p style="color:#B8B2A7;margin-bottom:2rem;">Respostas claras e técnicas para as principais dores de quem constrói ou reforma em Cabo Frio, Tamoios, Búzios e cidades vizinhas.</p>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.5rem;">
           ${ARTICLES.map(

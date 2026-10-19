@@ -3,7 +3,15 @@ export interface Article {
   slug: string;
   title: string;
   subtitle: string;
-  category: 'Estrutura & Maresia' | 'Custos & Orçamento' | 'Contratação & Segurança' | 'Gestão de Obras' | 'Projetos & Terrenos' | 'Vantagens';
+  category:
+    | 'Estrutura & Maresia'
+    | 'Custos & Orçamento'
+    | 'Contratação & Segurança'
+    | 'Gestão de Obras'
+    | 'Projetos & Terrenos'
+    | 'Vantagens'
+    | 'Serviços & Manutenção'
+    | 'Airbnb & Temporada';
   readTime: string;
   problemSummary: string;
   highlights: string[];
@@ -400,5 +408,220 @@ export const ARTICLES: Article[] = [
       'Chame no WhatsApp para tirar dúvidas sobre o seu lote ou projeto antes de tomar qualquer decisão.',
     ],
     whatsappPrompt: 'Olá! Li o guia sobre as vantagens de construir com preço fechado com o Grupo Vitti. Quero conversar no WhatsApp sobre meu projeto.',
+  },
+  {
+    id: '11',
+    slug: 'tinta-anti-maresia-pintura-litoral-cabo-frio-unamar',
+    title: 'Tinta Anti-Maresia em Cabo Frio e Unamar: Como Pintar a Casa de Praia Sem Mofo e Descascamento',
+    subtitle: 'A névoa salina e os ventos fortes da Região dos Lagos pulverizam tintas comuns em 6 meses. Conheça as tintas elastoméricas, emborrachadas e o preparo ideal de parede.',
+    category: 'Serviços & Manutenção',
+    readTime: '5 min de leitura',
+    problemSummary: 'Paredes externas com bolhas, descascando, manchas de mofo verde/escuro e pó branco (salitre) são o pesadelo de quem pinta a casa no litoral com produtos e técnicas inadequadas.',
+    highlights: [
+      'Tintas acrílicas comuns não suportam a dilatação térmica do litoral: a camada racha e a maresia penetra.',
+      'O uso de tinta emborrachada elastomérica cria uma membrana flexível que acompanha as microfissuras da alvenaria.',
+      'A lavagem prévia com cloro ou fungicida é obrigatória para neutralizar os esporos antes de aplicar qualquer selador.',
+      'Aplicação de fundo preparador de paredes em vez de selador comum para aglutinar partículas soltas de areia e cal.',
+    ],
+    content: [
+      {
+        sectionTitle: 'Por que a pintura descasca tão rápido no litoral?',
+        paragraphs: [
+          'Em cidades como Cabo Frio, Arraial do Cabo e o distrito de Tamoios (Unamar), a combinação de sol escaldante durante o dia, vento frio à noite e umidade marítima constante submete a alvenaria a ciclos severos de contração e dilatação. Uma tinta rígida convencional não tem elasticidade para acompanhar essa movimentação milimétrica, gerando microfissuras.',
+          'Além disso, o salitre transportado pela brisa marinha penetra nas menores aberturas e cristaliza no interior do reboco. Ao cristalizar, o sal aumenta de volume e empurra a película de tinta de dentro para fora, provocando bolhas e o clássico esfarelamento.',
+        ],
+      },
+      {
+        sectionTitle: 'O segredo da tinta emborrachada e hidrorrepelente',
+        paragraphs: [
+          'A solução técnica recomendada pelo Grupo Vitti é o sistema elastomérico de pintura. Trata-se de uma tinta com resina acrílica especial que forma uma membrana impermeável, capaz de se esticar em até 300% sem se romper. Isso sela completamente a fachada contra a névoa salina e chuvas de vento.',
+          'Para muros e fachadas com batida forte de sol poente, utilizamos cores com pigmentos inorgânicos com proteção UV de alta performance, que evitam o desbotamento precoce comum nos tons de areia, terracota e cinza no litoral.',
+        ],
+      },
+      {
+        sectionTitle: 'O passo a passo da preparação profissional da superfície',
+        paragraphs: [
+          'Nenhuma tinta faz milagre se aplicada sobre uma base contaminada. Nossa equipe executa lavagem com hidrojateamento e solução anti-fungo, raspagem manual de partes soltas, calafetação de trincas com selante poliuretano (PU) flexível e aplicação de fundo preparador para uniformizar a absorção.',
+        ],
+      },
+    ],
+    practicalTips: [
+      'Nunca pinte paredes externas em dias com ventos muito fortes ou umidade relativa acima de 85%, comuns no inverno litorâneo.',
+      'Em rodapés externos com umidade ascendente, faça a raspagem total do reboco até 1 metro e aplique argamassa polimérica antes da massa e tinta.',
+      'Contrate profissionais que usem lixamento com aspiração para evitar que a poeira fina contamine os cômodos internos.',
+    ],
+    whatsappPrompt: 'Olá! Li o guia de pintura anti-maresia e gostaria de um orçamento para pintar meu imóvel com o Grupo Vitti.',
+  },
+  {
+    id: '12',
+    slug: 'checklist-manutencao-expressa-airbnb-regiao-dos-lagos',
+    title: 'Checklist de Manutenção Expressa para Airbnb na Região dos Lagos: Como Proteger Sua Nota 5 Estrelas',
+    subtitle: 'Chuveiro queimado no sábado, ar-condicionado pingando e vaso entupido custam avaliações e cancelamentos. Veja como manter seu imóvel 100% blindado para hóspedes.',
+    category: 'Airbnb & Temporada',
+    readTime: '6 min de leitura',
+    problemSummary: 'Anfitriões que moram fora da Região dos Lagos sofrem com a falta de mão de obra de confiança para reparos rápidos entre o check-out das 11h e o check-in das 15h em Cabo Frio e Búzios.',
+    highlights: [
+      'Falhas no ar-condicionado e chuveiro elétrico são responsáveis por mais de 70% das queixas de hóspedes no verão.',
+      'A janela de 3 a 4 horas entre saída e entrada de reservas exige equipe local de pronto atendimento e vistorias padronizadas.',
+      'Uma avaliação negativa de 1 estrela derruba o anúncio nos algoritmos da plataforma por semanas.',
+      'Contratos de manutenção preventiva preventiva custam uma fração do prejuízo de reembolsar uma diária de réveillon.',
+    ],
+    content: [
+      {
+        sectionTitle: 'O pesadelo do anfitrião que mora longe',
+        paragraphs: [
+          'Você alugou sua casa em Búzios, Cabo Frio ou Unamar para o feriadão. O hóspede chega cansado da viagem com a família às 16h e manda uma mensagem: "O ar-condicionado da suíte só venta ar quente e o chuveiro está dando choque". Se você está no Rio de Janeiro ou em Minas Gerais, o desespero começa.',
+          'Procurar um eletricista ou técnico de ar-condicionado em pleno sábado à tarde na Região dos Lagos resulta em diárias superfaturadas ou no temido "só posso ir na segunda-feira". O hóspede reclama no suporte da plataforma, pede reembolso de 50% e deixa uma avaliação terrível.',
+        ],
+      },
+      {
+        sectionTitle: 'O serviço de suporte e gestão de manutenção do Grupo Vitti',
+        paragraphs: [
+          'O Grupo Vitti criou uma divisão especializada de socorro e manutenção preventiva para anfitriões de temporada. Cobrimos desde a revisão de rotina (teste de pressão de torneiras, limpeza de filtros de ar, troca de resistência de chuveiro e verificação de lâmpadas) até vistorias fotográficas pós-saída.',
+          'Se o hóspede quebrar uma maçaneta, entupir o vaso ou houver pane elétrica, nossa equipe local atua com urgência para resolver o problema sem que o anfitrião precise sair de casa.',
+        ],
+      },
+      {
+        sectionTitle: 'Prevenção antes da alta temporada',
+        paragraphs: [
+          'Antes dos meses de dezembro e janeiro, executamos o checklist preventivo completo: recarga de gás e higienização dos splits, limpeza e cloração da cisterna, reaperto dos bornes do quadro de disjuntores e lubrificação com spray náutico em todas as fechaduras e esquadrias de alumínio.',
+        ],
+      },
+    ],
+    practicalTips: [
+      'Deixe sempre uma resistência reserva para cada chuveiro da casa guardada no armário de suprimentos.',
+      'Instale protetores contra surtos de tensão (DPS) no quadro para que oscilações da rede elétrica não queimem os aparelhos de ar inverter.',
+      'Tenha o contato de uma empresa com CNPJ e equipe local pronta para intervir antes de aceitar reservas de alto valor.',
+    ],
+    whatsappPrompt: 'Olá! Sou anfitrião de temporada / Airbnb na Região dos Lagos e gostaria de conhecer os planos de suporte e manutenção expressa do Grupo Vitti.',
+  },
+  {
+    id: '13',
+    slug: 'piscina-agua-ferro-poco-artesiano-tamoios-buzios',
+    title: 'Água de Poço com Ferro e Piscina Verde em Tamoios e Búzios: O Guia Definitivo de Tratamento e Bombas',
+    subtitle: 'Em Unamar, Tamoios e áreas de praia, encher a piscina com água de poço costuma deixá-la marrom ou verde na hora. Entenda a oxidação do ferro e o manejo de filtros.',
+    category: 'Serviços & Manutenção',
+    readTime: '5 min de leitura',
+    problemSummary: 'O choque de cloro em água rica em metais pesados e ferro faz o líquido escurecer instantaneamente, manchando o vinil, a fibra e assustando quem acabou de encher a piscina.',
+    highlights: [
+      'A água de poço artesiano na faixa litorânea costuma conter alto teor de ferro e manganês dissolvidos.',
+      'Adicionar cloro tradicional oxida o ferro solúvel em óxido férrico insolúvel (cor marrom/ferrugem ou verde-escuro).',
+      'Uso de sequestrante de metais e floculante correto é o único caminho para decantar o mineral sem manchar a piscina.',
+      'A troca periódica da areia do filtro e a vedação do motor garantem água cristalina e sem desperdício de energia.',
+    ],
+    content: [
+      {
+        sectionTitle: 'Por que a água da piscina ficou marrom ao colocar cloro?',
+        paragraphs: [
+          'Em muitas localidades de Cabo Frio, especialmente no 2º Distrito (Tamoios e Unamar), a rede pública não chega a todas as ruas, exigindo poços artesianos. Quando a água do poço entra em contato com o ar ou recebe cloro, os íons de ferro (que estavam invisíveis na forma ferrosa) oxidam para a forma férrica. O resultado é assustador: a água límpida vira um chá marrom ou verde escuro em menos de 1 hora.',
+          'Se o proprietário insistir em jogar mais cloro ou esfregar sem o produto correto, o óxido de ferro adere às paredes de fibra ou vinil, gerando manchas amareladas que não saem facilmente.',
+        ],
+      },
+      {
+        sectionTitle: 'A metodologia de tratamento profissional do Grupo Vitti',
+        paragraphs: [
+          'Aplicamos sequestrantes de metais quelantes antes da desinfecção. Eles encapsulam os íons metálicos, impedindo que oxidem e manchem o revestimento. Em seguida, procedemos com decantação controlada via sulfato de alumínio ou polímeros líquidos, aspirando o resíduo direto para o esgoto ("dreno").',
+          'Também oferecemos contratos regulares de piscineiro profissional: monitoramento semanal de pH, alcalinidade total e cloro livre, aspiração de fundo, escovação de bordas e checagem preventiva de ruídos nos rolamentos da bomba.',
+        ],
+      },
+      {
+        sectionTitle: 'Cuidados com a casa de máquinas e bombas',
+        paragraphs: [
+          'A umidade subterrânea da casa de máquinas no litoral corrói tampas de ferro fundido e queima os capacitores dos motores. Nossa equipe técnica executa ventilação adequada, troca de selos mecânicos para evitar gotejamentos e substituição da areia do filtro a cada 2 anos.',
+        ],
+      },
+    ],
+    practicalTips: [
+      'Se sua água é de poço, nunca faça cloração de choque sem antes aplicar um inibidor/sequestrante de metais específicos para piscinas.',
+      'Evite aspirar água ferrosa decantada na posição "Filtrar", pois a sujeira fina volta imediatamente pelos bicos de retorno.',
+      'Contrate manutenção periódica profissional para ter a piscina sempre azul sem gastar fortunas em produtos químicos por tentativa e erro.',
+    ],
+    whatsappPrompt: 'Olá! Li o guia sobre tratamento de piscinas com água de poço e gostaria de um orçamento de manutenção com o Grupo Vitti.',
+  },
+  {
+    id: '14',
+    slug: 'eletrica-costeira-disjuntor-caindo-verao-casa-praia',
+    title: 'Disjuntor Desarmando no Verão: Como Redimensionar a Elétrica da Casa de Praia e Evitar Riscos',
+    subtitle: 'Dezembro a março: 3 ares-condicionados ligados, chuveiro elétrico, geladeiras e bomba da piscina. O que fazer quando o padrão de energia não aguenta e cheira a queimado.',
+    category: 'Serviços & Manutenção',
+    readTime: '5 min de leitura',
+    problemSummary: 'Casas de praia antigas na Região dos Lagos foram projetadas com padrão monofásico de 40A. No calor intenso, os fios esquentam, a conta de luz explode e o disjuntor cai a cada 20 minutos.',
+    highlights: [
+      'O disjuntor desarma pelo efeito térmico bimetálico: quando a corrente ultrapassa o limite seguro do condutor.',
+      'Trocar o disjuntor por um de amperagem maior sem trocar os fios é a principal causa de incêndios em casas de praia.',
+      'A maresia corrói os barramentos de cobre dentro dos quadros, aumentando a resistência elétrica e o consumo de energia.',
+      'A modernização para bifásico ou trifásico com disjuntores DIN e DPS protege aparelhos caros contra oscilações da Enel.',
+    ],
+    content: [
+      {
+        sectionTitle: 'O perigo invisível do "disjuntor que cai direto"',
+        paragraphs: [
+          'Quando você reúne a família no verão e liga os ares-condicionados, a churrasqueira elétrica e alguém entra no chuveiro, a casa fica às escuras. O instinto leigo é chamar um curioso para "colocar um disjuntor mais forte de 50A ou 60A". Esse é um erro gravíssimo.',
+          'O disjuntor existe justamente para proteger o fio de derreter. Se você instala um disjuntor maior em fios finos de 2,5mm² ou 4mm², o disjuntor não desarma, mas a fiação esquenta por dentro das paredes, resseca a capa isolante e inicia focos de incêndio.',
+        ],
+      },
+      {
+        sectionTitle: 'Revisão técnica de quadros e balanceamento de fases',
+        paragraphs: [
+          'O Grupo Vitti realiza o diagnóstico termográfico e dimensionamento elétrico conforme a NBR 5410. Calculamos a demanda real de carga simultânea, separamos circuitos dedicados para chuveiros e ar-condicionado, e distribuímos o consumo equilibradamente entre as fases.',
+          'Instalamos também o Dispositivo Protetor contra Surtos (DPS) e o Interruptor Diferencial Residual (DR), obrigatório por lei para evitar que crianças ou adultos tomem choques fatais em áreas molhadas como piscina e banheiros.',
+        ],
+      },
+      {
+        sectionTitle: 'Proteção dos contatos elétricos contra o salitre',
+        paragraphs: [
+          'Em cidades litorâneas, o cobre e os parafusos do quadro elétrico sofrem com o zinabre (oxidação esverdeada). Usamos terminais tubulares banhados, pasta anti-óxido e quadros herméticos com grau de proteção IP65 para impedir a entrada de vapor salino.',
+        ],
+      },
+    ],
+    practicalTips: [
+      'Se o disjuntor desarma frequentemente, nunca tente travá-lo nem aumente a amperagem sem que um eletricista qualificado meça a bitola dos condutores.',
+      'Solicite à concessionária (Enel) o aumento de carga se você instalou novos condicionadores de ar split na residência.',
+      'Faça o reaperto dos parafusos do quadro geral a cada 12 meses: a vibração e os ciclos de calor afrouxam os bornes e aumentam o consumo de energia.',
+    ],
+    whatsappPrompt: 'Olá! Li o guia de elétrica costeira e gostaria de agendar uma revisão de quadro / instalações com o Grupo Vitti.',
+  },
+  {
+    id: '15',
+    slug: 'caca-vazamentos-cisterna-infiltracoes-litoral',
+    title: 'Cisterna Esvaziando Sozinha? Como Identificar Vazamentos Ocultos na Região dos Lagos',
+    subtitle: 'Em locais onde a água depende de caminhão-pipa ou abastecimento intermitente, perder milhares de litros por fissuras na cisterna ou canos furados é prejuízo dobrado.',
+    category: 'Serviços & Manutenção',
+    readTime: '5 min de leitura',
+    problemSummary: 'Rachaduras causadas por movimentação do solo arenoso e lençol freático raso na Região dos Lagos quebram a impermeabilização de cisternas enterradas sem deixar poça visível na superfície.',
+    highlights: [
+      'A perda de 1 gota por segundo em uma válvula ou conexão subterrânea desperdiça mais de 1.300 litros de água por mês.',
+      'Cisternas enterradas em áreas de areia sofrem pressão hidrostática externa quando a maré sobe ou chove muito.',
+      'Geofone eletrônico e testes de estanqueidade manométrica localizam o ponto sem quebra-quebra destrutivo.',
+      'Impermeabilização com argamassas poliméricas flexíveis e manta asfáltica garante retenção de água sem contaminação do lençol.',
+    ],
+    content: [
+      {
+        sectionTitle: 'O drama da água que some na casa de praia',
+        paragraphs: [
+          'Você paga R$ 250 a R$ 400 em um caminhão-pipa para abastecer sua cisterna de 10.000 litros. Poucos dias depois, mesmo com a casa vazia, você nota que o nível da água baixou pela metade. O que aconteceu? Em terrenos arenosos de Cabo Frio, Búzios e Tamoios, a água que vaza no subsolo é absorvida instantaneamente pelo solo, sem nunca aflorar na grama ou no quintal.',
+          'Além do prejuízo financeiro com água comprada, o vazamento pode criar bolsões de ar sob o piso e recalcar fundações de muros e garagens.',
+        ],
+      },
+      {
+        sectionTitle: 'Caça-vazamentos eletrônico não destrutivo',
+        paragraphs: [
+          'O Grupo Vitti conta com equipamentos de ponta para caça-vazamentos: geofones eletrônicos ultrassensíveis que escutam o ruído característico da água sob pressão vazando em tubulações enterradas, além de câmeras endoscópicas para inspeção de esgotos e ralos.',
+          'Assim que o ponto é identificado com precisão cirúrgica de centímetros, abrimos apenas uma única pedra de piso para efetuar a solda ou troca da tubulação danificada, minimizando poeira e custos de reposição de piso.',
+        ],
+      },
+      {
+        sectionTitle: 'Restauração e impermeabilização de cisternas',
+        paragraphs: [
+          'Se a perda estiver na própria estrutura de alvenaria ou concreto da cisterna, executamos o esvaziamento, lavagem técnica com hipoclorito, tratamento de trincas com graute epóxi e aplicação de impermeabilizante bi-componente flexível, próprio para água potável.',
+        ],
+      },
+    ],
+    practicalTips: [
+      'Faça o teste da boia: encha a caixa d’água ou cisterna até o nível máximo, amarre a boia para cima para fechar a entrada, marque o nível com fita adesiva e verifique se baixou após 12 horas sem uso.',
+      'Se a bomba pressurizadora dá pequenos "estalos" ou liga sozinha por 2 segundos a cada 10 minutos, você certamente tem um vazamento ou válvula de descarga descalibrada.',
+      'Chame profissionais com equipamento adequado antes de sair quebrando o quintal aleatoriamente à procura do cano furado.',
+    ],
+    whatsappPrompt: 'Olá! Li o guia sobre caça-vazamentos e cisternas. Preciso de um diagnóstico hidráulico no meu imóvel com o Grupo Vitti.',
   },
 ];

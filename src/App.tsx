@@ -13,6 +13,7 @@ import { PROJECTS_MEMORIAL, ProjectMemorial } from './data/projectsData';
 import { ProjectMemorialModal } from './components/ProjectMemorialModal';
 import { WhatsAppIcon } from './components/WhatsAppIcon';
 import { ArchitecturalIntro } from './components/ArchitecturalIntro';
+import { SERVICES_LIST } from './data/servicesData';
 import {
   ArrowUpRight,
   ShieldCheck,
@@ -34,28 +35,64 @@ import {
   Facebook,
   HelpCircle,
   ChevronDown,
+  Paintbrush,
+  Droplets,
+  Zap,
+  Trees,
+  Grid,
+  Waves,
+  Wind,
+  Flower2,
+  KeyRound,
+  Check,
 } from 'lucide-react';
 
+const SERVICE_ICONS: Record<string, React.ElementType> = {
+  construcao: Home,
+  reforma: Hammer,
+  pintura: Paintbrush,
+  hidraulica: Droplets,
+  eletrica: Zap,
+  carpintaria: Trees,
+  acompanhamento: FileCheck,
+  ladrilheiro: Grid,
+  piscina: Waves,
+  'ar-condicionado': Wind,
+  jardinagem: Flower2,
+  'limpeza-geral': Sparkles,
+  'gestao-airbnb': KeyRound,
+};
+
 const FAQ_ITEMS = [
+  {
+    question: 'Vocês realizam serviços rápidos e manutenção emergencial (como elétrica, hidráulica e pintura)?',
+    answer:
+      'Sim. Dispomos de equipes volantes para atendimento ágil em Cabo Frio, Tamoios (Unamar), Búzios, Arraial do Cabo e cidades vizinhas. Realizamos desde reparos urgentes no mesmo dia até serviços programados com pontualidade, nota fiscal e garantia técnica.',
+  },
+  {
+    question: 'Como funciona o suporte de manutenção para Airbnb e casas de temporada?',
+    answer:
+      'Atendemos anfitriões com suporte técnico expresso entre check-outs e check-ins: conserto de ar-condicionado, chuveiros elétricos, bombas de piscina, desentupimentos e vistorias fotográficas de avarias para que seu imóvel mantenha a avaliação 5 estrelas sem você precisar se deslocar.',
+  },
   {
     question: 'Vocês realizam obras do zero e reformas em Cabo Frio, Tamoios (Unamar) e Búzios?',
     answer:
       'Sim. Atendemos toda a Região dos Lagos com equipes locais, incluindo Cabo Frio (centro, Ogiva, Peró e 2º Distrito em Tamoios/Unamar), Armação dos Búzios, Arraial do Cabo, São Pedro da Aldeia, Iguaba Grande e Rio das Ostras.',
   },
   {
-    question: 'Como funciona o contrato de obra a preço fechado do Grupo Vitti?',
+    question: 'Como funciona o contrato a preço fechado do Grupo Vitti?',
     answer:
-      'Elaboramos o orçamento executivo detalhado antes do início da obra, com cronograma físico-financeiro definido por etapas. Assim você sabe exatamente quanto vai investir do início à entrega das chaves, sem aditivos surpresa.',
+      'Elaboramos o orçamento executivo detalhado antes do início do serviço ou da obra, com escopo e prazos definidos. Assim você sabe exatamente quanto vai investir, sem surpresas nem aditivos arbitrários.',
   },
   {
-    question: 'Moro fora da Região dos Lagos. Como faço para acompanhar minha obra à distância?',
+    question: 'Moro fora da Região dos Lagos. Como faço para acompanhar meu serviço ou obra à distância?',
     answer:
-      'Você recebe relatórios semanais diretamente no seu WhatsApp com fotos em alta resolução, vídeos de ensaios técnicos e medição física real do avanço de cada etapa, sem precisar viajar todo fim de semana.',
+      'Você recebe relatórios diretamente no seu WhatsApp com fotos em alta resolução, vídeos e medição real do avanço de cada serviço, sem precisar viajar todo fim de semana.',
   },
   {
-    question: 'Qual o diferencial técnico das obras do Grupo Vitti contra maresia e umidade?',
+    question: 'Qual o diferencial técnico contra a maresia da Região dos Lagos?',
     answer:
-      'Aplicamos rigorosamente as normas de agressividade marinha (NBR 6118), com cobrimento adequado de armaduras, concreto estrutural dosado, impermeabilização de vigas baldrame contra lençol freático raso (muito comum em Cabo Frio e Tamoios) e especificação de esquadrias com padrão naval.',
+      'Aplicamos materiais e técnicas adequadas para o litoral: tintas elastoméricas hidrorrepelentes, ferragens protegidas conforme NBR 6118, inox naval AISI 316 e quadros elétricos vedados contra a corrosão salina.',
   },
 ];
 
@@ -68,10 +105,10 @@ export default function App() {
   // Quick WhatsApp Lead Form
   const [clientName, setClientName] = useState('');
   const [clientCity, setClientCity] = useState<(typeof CONFIG.cidades)[number]>('Cabo Frio');
-  const [clientScope, setClientScope] = useState('Construção Residencial do Zero (Chave na Mão)');
+  const [clientScope, setClientScope] = useState('Pintura Especializada & Anti-Maresia');
   const [clientMessage, setClientMessage] = useState('');
 
-  // Sincronização dinâmica de URL para os 10 Guias Práticos (SEO e navegação direta)
+  // Sincronização dinâmica de URL para os 15 Guias Práticos (SEO e navegação direta)
   useEffect(() => {
     const handleUrlRoute = () => {
       const path = window.location.pathname;
@@ -111,29 +148,45 @@ export default function App() {
     if (window.location.pathname.startsWith('/guias/')) {
       window.history.pushState(null, '', '/');
     }
-    document.title = 'Grupo Vitti — Construtora em Cabo Frio, Búzios e Região dos Lagos';
+    document.title = 'Grupo Vitti — Construção, Reformas & 13 Serviços na Região dos Lagos';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
       metaDesc.setAttribute(
         'content',
-        'Construtora de casas de alto padrão e reformas em Cabo Frio, Tamoios (2º Distrito), Búzios, Arraial do Cabo e Região dos Lagos. Engenharia de precisão, proteção anti-maresia e transparência radical.'
+        'Empresa de construção, reformas e 13 serviços especializados em Cabo Frio, Tamoios (Unamar), Búzios e Região dos Lagos. Da manutenção emergencial à chave na mão.'
       );
     }
     const canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) canonical.setAttribute('href', 'https://vitticonstrucoes.com.br');
   };
 
+  const [serviceCategory, setServiceCategory] = useState<string>('all');
+
+  const filteredServices = SERVICES_LIST.filter((srv) => {
+    return serviceCategory === 'all' || srv.category === serviceCategory;
+  });
+
+  const serviceCategories = [
+    { id: 'all', label: 'Todos os 13 Serviços' },
+    { id: 'Instalações & Reparos', label: 'Instalações & Reparos' },
+    { id: 'Manutenção & Cuidados', label: 'Manutenção Periódica' },
+    { id: 'Gestão Imobiliária', label: 'Airbnb & Temporada' },
+    { id: 'Obras & Reformas', label: 'Obras & Reformas' },
+  ];
+
   const filteredArticles = ARTICLES.filter((art) => {
     return articleCategory === 'all' || art.category === articleCategory;
   });
 
   const categories = [
-    { id: 'all', label: 'Todos os 10 Guias' },
+    { id: 'all', label: 'Todos os 15 Guias' },
+    { id: 'Serviços & Manutenção', label: 'Serviços & Manutenção' },
+    { id: 'Airbnb & Temporada', label: 'Airbnb & Temporada' },
     { id: 'Estrutura & Maresia', label: 'Estrutura & Maresia' },
     { id: 'Custos & Orçamento', label: 'Custos & Orçamento' },
     { id: 'Contratação & Segurança', label: 'Segurança & Contrato' },
     { id: 'Gestão de Obras', label: 'Gestão & Distância' },
-    { id: 'Projetos & Terrenos', label: 'Terrenos & Reformas' },
+    { id: 'Projetos & Terrenos', label: 'Terrenos & Projetos' },
     { id: 'Vantagens', label: 'Vantagens Reais' },
   ];
 
@@ -142,66 +195,11 @@ export default function App() {
     const text = `Olá, vim pelo site do ${CONFIG.siteName}.
 - Meu nome: ${clientName || 'Não informado'}
 - Cidade da Obra: ${clientCity}
-- Tipo de Projeto: ${clientScope}
+- Tipo de Serviço/Projeto: ${clientScope}
 ${clientMessage ? `- Detalhes: ${clientMessage}` : ''}
 Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
     window.open(whatsappLink(text), '_blank');
   };
-
-  const services = [
-    {
-      icon: Home,
-      num: '01',
-      title: 'Construção Residencial Completa (Chave na Mão)',
-      subtitle: 'Da terraplenagem à entrega das chaves com preço e prazo garantidos.',
-      desc: 'Assumimos a responsabilidade integral da sua casa de praia ou veraneio. Equipe própria, compras homologadas com desconto de construtora e controle de qualidade diário.',
-      points: [
-        'Compatibilização entre arquitetura, cálculo estrutural e elétrica/hidráulica',
-        'Cronograma físico-financeiro com entregas por etapas e sem aditivos surpresa',
-        'Acabamentos de alto padrão com paginação milimétrica de pisos e marcenaria',
-      ],
-      whatsappMsg: 'Olá! Gostaria de um orçamento para Construção Residencial Turnkey (Chave na Mão) com o Grupo Vitti.',
-    },
-    {
-      icon: ShieldCheck,
-      num: '02',
-      title: 'Fundações, Concreto Armado & Proteção Anti-Maresia',
-      subtitle: 'Construção reforçada para sua casa durar mais de 50 anos sem dores de cabeça.',
-      desc: 'Construir no litoral exige concreto de qualidade, cobrimento rigoroso da ferragem contra maresia e soluções inteligentes para encostas e lençol freático.',
-      points: [
-        'Avaliação do solo e escolha da fundação certa para não trincar',
-        'Impermeabilização correta contra umidade e infiltrações',
-        'Concreto aparente, balanços e muros de contenção bem estruturados',
-      ],
-      whatsappMsg: 'Olá! Gostaria de tirar dúvidas sobre fundações e estrutura de concreto na Região dos Lagos.',
-    },
-    {
-      icon: Hammer,
-      num: '03',
-      title: 'Reformas & Retrofit de Alto Padrão',
-      subtitle: 'Modernize seu imóvel com segurança e valorização real.',
-      desc: 'Abertura de salas integradas, novos espaços gourmet, piscinas e troca total de elétrica e hidráulica com tranquilidade e responsabilidade.',
-      points: [
-        'Avaliação criteriosa da estrutura antes de qualquer intervenção',
-        'Reforço com vigas metálicas para criação de grandes espaços integrados',
-        'Tratamento e recuperação de ferragens castigadas pela maresia',
-      ],
-      whatsappMsg: 'Olá! Tenho uma casa para reformar na Região dos Lagos e gostaria de conversar sobre um orçamento com o Grupo Vitti.',
-    },
-    {
-      icon: Layers,
-      num: '04',
-      title: 'Gestão Completa da Obra & Transparência Total',
-      subtitle: 'Acompanhamento direto e relatórios detalhados para o seu projeto.',
-      desc: 'Com o Grupo Vitti, você acompanha tudo de perto pelo celular: fotos, vídeos semanais, medição física de avanço e controle rigoroso de etapas.',
-      points: [
-        'Relatórios fotográficos e vídeos semanais direto no seu WhatsApp',
-        'Prevenção de erros antes de comprar materiais ou levantar paredes',
-        'Transparência total em compras com repasse direto de descontos para você',
-      ],
-      whatsappMsg: 'Olá! Gostaria de saber mais sobre a gestão de obras com o Grupo Vitti.',
-    },
-  ];
 
 
 
@@ -239,7 +237,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               Sobre Nós
             </a>
             <a href="#servicos" className="hover:text-white transition-colors">
-              Serviços
+              13 Serviços
             </a>
             <a href="#obras" className="hover:text-white transition-colors">
               Conceito & Obras
@@ -249,7 +247,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               className="text-[#C89467] hover:text-[#E2B185] transition-colors flex items-center gap-1.5"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>10 Guias Práticos</span>
+              <span>15 Guias Práticos</span>
             </a>
             <a href="#faq" className="hover:text-white transition-colors">
               FAQ
@@ -295,7 +293,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               href="#servicos"
               className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#B8B2A7] hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-all"
             >
-              Serviços
+              13 Serviços
             </a>
             <a
               href="#obras"
@@ -308,7 +306,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
               className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#E8C29E] bg-[#C89467]/10 border border-[#C89467]/25 hover:bg-[#C89467]/20 transition-all flex items-center gap-1"
             >
               <Sparkles className="w-3 h-3 text-[#C89467]" />
-              <span>10 Guias</span>
+              <span>15 Guias</span>
             </a>
             <a
               href="#faq"
@@ -353,17 +351,16 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
 
               {/* Main Headline */}
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.12]">
-                Construir e reformar na Região dos Lagos{' '}
+                Do reparo urgente à obra completa:{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8C29E] via-[#C89467] to-[#A86F3D]">
-                  sem sustos, atrasos ou retrabalho.
+                  o ecossistema de serviços da Região dos Lagos.
                 </span>
               </h1>
 
               {/* Subheadline */}
               <p className="text-base sm:text-xl text-[#B8B2A7] max-w-3xl mx-auto leading-relaxed">
-                Somos uma construtora focada no que realmente importa:
-                orçamento fechado de verdade, proteção rigorosa contra maresia e acompanhamento
-                digital transparente para você não virar refém da obra.
+                Pintura anti-maresia, elétrica, hidráulica, piscinas, ar-condicionado, reformas e suporte para Airbnb.
+                Atendimento rápido com preço fechado, garantia técnica e relatórios digitais no seu celular.
               </p>
 
               {/* Action Buttons */}
@@ -372,7 +369,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                   href="#servicos"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-sm sm:text-base font-semibold text-white transition-all"
                 >
-                  <span>Conhecer Nossos Serviços</span>
+                  <span>Explorar os 13 Serviços</span>
                 </a>
 
                 <a
@@ -380,23 +377,23 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#C89467]/15 hover:bg-[#C89467]/25 border border-[#C89467]/40 text-sm sm:text-base font-semibold text-[#E8C29E] transition-all"
                 >
                   <BookOpen className="w-4 h-4 text-[#C89467]" />
-                  <span>Ler os 10 Guias Práticos de Obra</span>
+                  <span>Ler os 15 Guias Práticos de Obra</span>
                 </a>
               </div>
 
               {/* Vantagens Diretas para o Cliente */}
               <div className="pt-8 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center flex flex-col items-center justify-center">
-                  <div className="text-xs font-mono text-[#C89467] font-semibold">PREÇO FECHADO</div>
-                  <div className="text-xs text-[#8A8479] mt-1">Sem sustos nem aditivos surpresa no meio da obra</div>
+                  <div className="text-xs font-mono text-[#C89467] font-semibold">PRONTO ATENDIMENTO</div>
+                  <div className="text-xs text-[#8A8479] mt-1">Equipes locais ágeis para socorro e manutenções</div>
                 </div>
                 <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center flex flex-col items-center justify-center">
-                  <div className="text-xs font-mono text-[#C89467] font-semibold">ZERO DOR DE CABEÇA</div>
-                  <div className="text-xs text-[#8A8479] mt-1">Cuidamos de tudo: equipe, compras e acabamento</div>
+                  <div className="text-xs font-mono text-[#C89467] font-semibold">PREÇO FECHADO</div>
+                  <div className="text-xs text-[#8A8479] mt-1">Orçamento claro sem surpresas nem aditivos</div>
                 </div>
                 <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center flex flex-col items-center justify-center">
                   <div className="text-xs font-mono text-[#C89467] font-semibold">ANTI-MARESIA</div>
-                  <div className="text-xs text-[#8A8479] mt-1">Estrutura durável que não racha nem esfarela no litoral</div>
+                  <div className="text-xs text-[#8A8479] mt-1">Materiais e técnicas que resistem ao salitre costeiro</div>
                 </div>
                 <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 text-center flex flex-col items-center justify-center">
                   <div className="text-xs font-mono text-[#C89467] font-semibold">ACOMPANHE DE LONGE</div>
@@ -549,54 +546,88 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════════
-            SERVIÇOS: 4 Direct Pillars with Direct WhatsApp Action
+            SERVIÇOS: 13 Serviços Especializados do Grupo Vitti
            ═══════════════════════════════════════════════════════════════════ */}
         <section id="servicos" className="py-20 sm:py-28 bg-[#0D0C0B] border-t border-white/10">
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
-            <div className="max-w-3xl mx-auto text-center mb-16 space-y-4">
+            <div className="max-w-3xl mx-auto text-center mb-12 space-y-4">
               <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#C89467]/10 border border-[#C89467]/20 text-xs font-mono tracking-wider uppercase text-[#C89467]">
-                O que Fazemos
+                Ecossistema de Soluções
               </div>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                Soluções completas para sua obra, da fundação ao acabamento.
+                13 Serviços Especializados para Sua Casa ou Pousada.
               </h2>
               <p className="text-base text-[#B8B2A7] max-w-2xl mx-auto leading-relaxed">
-                Seja para erguer uma casa do zero ou revitalizar um imóvel existente, aplicamos
-                metodologia que elimina riscos e custos desnecessários.
+                Do socorro emergencial e manutenção periódica à reforma e construção completa. Equipes locais qualificadas, nota fiscal, garantia e atendimento com padrão de engenharia em toda a Região dos Lagos.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {services.map((srv) => {
-                const IconComponent = srv.icon;
+            {/* Category Filter Tabs */}
+            <div className="mb-10">
+              <div className="menu-scrollbar pb-3 sm:pb-0 -mx-5 px-5 sm:mx-0 sm:px-0">
+                <div className="flex items-center gap-2 min-w-max sm:min-w-0 sm:flex-wrap sm:justify-center pb-1.5 sm:pb-0">
+                  {serviceCategories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setServiceCategory(cat.id)}
+                      className={`shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                        serviceCategory === cat.id
+                          ? 'bg-white text-[#0D0C0B] font-semibold shadow-md'
+                          : 'bg-white/5 text-[#A8A29A] hover:bg-white/10 hover:text-white border border-white/10'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 13 Services Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredServices.map((srv) => {
+                const IconComponent = SERVICE_ICONS[srv.id] || Sparkles;
                 return (
                   <div
-                    key={srv.num}
-                    className="p-8 rounded-2xl bg-[#141312] border border-white/10 hover:border-[#C89467]/50 transition-all flex flex-col justify-between group space-y-6"
+                    key={srv.id}
+                    className="p-6 sm:p-7 rounded-2xl bg-[#141312] border border-white/10 hover:border-[#C89467]/60 transition-all flex flex-col justify-between group hover:-translate-y-1 duration-200 space-y-6"
                   >
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#C89467] group-hover:scale-110 transition-transform">
                           <IconComponent className="w-6 h-6" />
                         </div>
-                        <span className="text-sm font-mono text-[#7A756E] font-bold">
-                          {srv.num}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-1 rounded-md bg-[#C89467]/10 border border-[#C89467]/20 text-[10px] font-mono font-bold uppercase text-[#E8C29E]">
+                            {srv.badge}
+                          </span>
+                          <span className="text-xs font-mono text-[#7A756E] font-bold">
+                            {srv.num}
+                          </span>
+                        </div>
                       </div>
 
-                      <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#E8C29E] transition-colors">
-                        {srv.title}
-                      </h3>
+                      <div>
+                        <div className="text-[11px] font-mono uppercase tracking-wider text-[#C89467] mb-1">
+                          {srv.category}
+                        </div>
+                        <h3 className="text-xl font-bold text-white group-hover:text-[#E8C29E] transition-colors leading-snug">
+                          {srv.title}
+                        </h3>
+                      </div>
 
-                      <p className="text-xs sm:text-sm font-medium text-[#C89467]">
+                      <p className="text-xs text-[#C89467] font-medium leading-relaxed">
                         {srv.subtitle}
                       </p>
 
-                      <p className="text-sm text-[#A8A29A] leading-relaxed">{srv.desc}</p>
+                      <p className="text-xs sm:text-sm text-[#A8A29A] leading-relaxed">
+                        {srv.summary}
+                      </p>
 
-                      <div className="pt-2 space-y-2 border-t border-white/10">
-                        {srv.points.map((pt, idx) => (
-                          <div key={idx} className="flex items-start gap-2.5 text-xs text-[#D8D3C9]">
+                      <div className="pt-3 space-y-2 border-t border-white/10">
+                        {srv.bullets.map((pt, idx) => (
+                          <div key={idx} className="flex items-start gap-2 text-xs text-[#D8D3C9]">
                             <CheckCircle2 className="w-3.5 h-3.5 text-[#C89467] shrink-0 mt-0.5" />
                             <span>{pt}</span>
                           </div>
@@ -604,14 +635,14 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                    <div className="pt-4 border-t border-white/10">
                       <a
                         href={whatsappLink(srv.whatsappMsg)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-white hover:text-[#C89467] transition-colors"
+                        className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white/5 hover:bg-[#25D366] text-white hover:text-[#0A2412] font-semibold text-xs sm:text-sm transition-all border border-white/10 hover:border-[#25D366]"
                       >
-                        <span>Solicitar Orçamento Deste Serviço</span>
+                        <span>Pedir Orçamento no WhatsApp</span>
                         <ArrowUpRight className="w-4 h-4" />
                       </a>
                     </div>
@@ -947,25 +978,63 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
 
                   <div>
                     <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
-                      Tipo de Projeto
+                      Qual serviço ou projeto você precisa?
                     </label>
                     <select
                       value={clientScope}
                       onChange={(e) => setClientScope(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl bg-[#1C1A18] border border-white/10 text-sm text-white focus:outline-none focus:border-[#C89467]"
                     >
-                      <option value="Construção Residencial do Zero (Turnkey)">
-                        Construção Residencial do Zero (Chave na Mão)
-                      </option>
-                      <option value="Reforma ou Retrofit de Casa Existente">
-                        Reforma Geral ou Retrofit de Casa Existente
-                      </option>
-                      <option value="Fundação, Muro de Arrimo ou Estrutura de Concreto">
-                        Fundação, Muro de Arrimo ou Estrutura de Concreto
-                      </option>
-                      <option value="Orçamento de Projeto ou Obra">
-                        Orçamento de Projeto ou Obra
-                      </option>
+                      <optgroup label="Reparos & Instalações Rápidas">
+                        <option value="Pintura Especializada & Anti-Maresia">
+                          Pintura Especializada & Proteção Anti-Maresia
+                        </option>
+                        <option value="Hidráulica & Caça-Vazamentos">
+                          Hidráulica & Caça-Vazamentos
+                        </option>
+                        <option value="Elétrica Residencial & Náutica">
+                          Elétrica Residencial & Náutica
+                        </option>
+                        <option value="Instalação & Manutenção de Ar-Condicionado">
+                          Instalação & Manutenção de Ar-Condicionado
+                        </option>
+                        <option value="Ladrilheiro, Porcelanatos & Revestimentos">
+                          Ladrilheiro, Porcelanatos & Revestimentos
+                        </option>
+                        <option value="Carpintaria, Telhados & Decks">
+                          Carpintaria, Telhados & Decks
+                        </option>
+                      </optgroup>
+                      <optgroup label="Manutenção Periódica & Lazer">
+                        <option value="Limpeza & Tratamento de Piscina">
+                          Limpeza & Tratamento de Piscina
+                        </option>
+                        <option value="Jardinagem & Paisagismo Litorâneo">
+                          Jardinagem & Paisagismo Litorâneo
+                        </option>
+                        <option value="Limpeza Geral Pós-Obra & Faxina Técnica">
+                          Limpeza Geral Pós-Obra & Faxina Técnica
+                        </option>
+                      </optgroup>
+                      <optgroup label="Airbnb & Casas de Temporada">
+                        <option value="Gestão de Airbnb & Manutenção Preventiva Expressa">
+                          Gestão de Airbnb & Manutenção Preventiva Expressa
+                        </option>
+                      </optgroup>
+                      <optgroup label="Obras & Reformas">
+                        <option value="Construção Residencial Completa (Chave na Mão)">
+                          Construção Residencial Completa (Chave na Mão)
+                        </option>
+                        <option value="Reforma Geral & Retrofit">
+                          Reforma Geral & Retrofit
+                        </option>
+                        <option value="Acompanhamento Técnico & Vistoria de Obras">
+                          Acompanhamento Técnico & Vistoria de Obras
+                        </option>
+                        <option value="Outro Serviço ou Projeto Especial">
+                          Outro Serviço ou Projeto Especial
+                        </option>
+                      </optgroup>
                     </select>
                   </div>
 
