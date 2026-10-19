@@ -718,7 +718,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
         </section>
 
         {/* ═══════════════════════════════════════════════════════════════════
-            OS 10 ARTIGOS: DORES REAIS DE CONSTRUIR E REFORMAR
+            OS 15 ARTIGOS: DORES REAIS DE CONSTRUIR E REFORMAR
            ═══════════════════════════════════════════════════════════════════ */}
         <section id="artigos" className="py-20 sm:py-28 bg-[#0D0C0B] border-t border-white/10">
           <div className="max-w-7xl mx-auto px-5 sm:px-8">
@@ -729,10 +729,10 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                 <span>Biblioteca Prática para Quem Constrói ou Reforma</span>
               </div>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                10 Guias Práticos: As Dores e Armadilhas de Construir e Reformar
+                15 Guias Práticos: As Dores e Armadilhas de Construir e Reformar
               </h2>
               <p className="text-base sm:text-lg text-[#B8B2A7] leading-relaxed max-w-2xl mx-auto">
-                Escrevemos estes 10 artigos detalhados para te proteger dos maiores erros e prejuízos
+                Escrevemos estes 15 artigos detalhados para te proteger dos maiores erros e prejuízos
                 que acontecem em obras no litoral. Conhecimento técnico direto, sem rodeios.
               </p>
             </div>
