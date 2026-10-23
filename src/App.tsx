@@ -18,6 +18,10 @@ import { DedicatedGuidePage } from './components/DedicatedGuidePage';
 import { DedicatedServicePage } from './components/DedicatedServicePage';
 import { DedicatedLocationPage } from './components/DedicatedLocationPage';
 import { DedicatedProjectPage } from './components/DedicatedProjectPage';
+import { CostSimulator } from './components/CostSimulator';
+import { FloatingWhatsApp } from './components/FloatingWhatsApp';
+import { trackLead, trackWhatsAppClick } from './lib/analytics';
+import { SlidersHorizontal, Loader2 } from 'lucide-react';
 import {
   ArrowUpRight,
   ShieldCheck,
@@ -203,9 +207,12 @@ export default function App() {
 
   // Quick WhatsApp Lead Form
   const [clientName, setClientName] = useState('');
+  const [clientPhone, setClientPhone] = useState('');
   const [clientCity, setClientCity] = useState<(typeof CONFIG.cidades)[number]>('Cabo Frio');
   const [clientScope, setClientScope] = useState('Pintura Especializada & Anti-Maresia');
   const [clientMessage, setClientMessage] = useState('');
+  const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [formFeedback, setFormFeedback] = useState('');
 
   // Sincronização de rotas SPA
   useEffect(() => {
@@ -288,67 +295,116 @@ export default function App() {
     { id: 'Vantagens', label: 'Vantagens Reais' },
   ];
 
-  const handleSendLeadWhatsapp = (e: React.FormEvent) => {
+  const handleSendLeadWhatsapp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormStatus('submitting');
+    setFormFeedback('');
+
     const text = `Olá, vim pelo site do ${CONFIG.siteName}.
 - Meu nome: ${clientName || 'Não informado'}
+- Telefone/WhatsApp: ${clientPhone || 'Não informado'}
 - Cidade da Obra: ${clientCity}
 - Tipo de Serviço/Projeto: ${clientScope}
 ${clientMessage ? `- Detalhes: ${clientMessage}` : ''}
 Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
-    window.open(whatsappLink(text), '_blank');
+
+    const payload = {
+      access_key: CONFIG.web3formsAccessKey,
+      subject: `[LEAD NOVO] ${clientName || 'Cliente'} - ${clientCity} (${clientScope})`,
+      from_name: 'Grupo Vitti Website',
+      name: clientName,
+      phone: clientPhone || 'Não informado',
+      city: clientCity,
+      service: clientScope,
+      message: clientMessage || 'Sem detalhes adicionais',
+      page_url: typeof window !== 'undefined' ? window.location.href : '',
+    };
+
+    try {
+      if (CONFIG.web3formsAccessKey) {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+      trackLead('form_contato_principal');
+      setFormStatus('success');
+      setFormFeedback('Solicitação registrada com sucesso! Abrindo o WhatsApp da engenharia...');
+      setTimeout(() => {
+        window.open(whatsappLink(text), '_blank');
+      }, 700);
+    } catch (err) {
+      console.warn('Erro ao enviar via API, usando fallback do WhatsApp:', err);
+      trackLead('form_contato_fallback');
+      setFormStatus('success');
+      setFormFeedback('Abrindo WhatsApp...');
+      window.open(whatsappLink(text), '_blank');
+    }
   };
 
   // Se a rota for um Guia Prático dedicado
   if (currentRoute.type === 'guide') {
     return (
-      <DedicatedGuidePage
-        article={currentRoute.article}
-        onBackToHome={navigateToHome}
-        onSelectGuide={navigateToGuide}
-        onSelectService={navigateToService}
-        onSelectLocation={navigateToLocation}
-      />
+      <>
+        <DedicatedGuidePage
+          article={currentRoute.article}
+          onBackToHome={navigateToHome}
+          onSelectGuide={navigateToGuide}
+          onSelectService={navigateToService}
+          onSelectLocation={navigateToLocation}
+        />
+        <FloatingWhatsApp />
+      </>
     );
   }
 
   // Se a rota for um Serviço Especializado dedicado
   if (currentRoute.type === 'service') {
     return (
-      <DedicatedServicePage
-        service={currentRoute.service}
-        onBackToHome={navigateToHome}
-        onSelectGuide={navigateToGuide}
-        onSelectService={navigateToService}
-        onSelectLocation={navigateToLocation}
-      />
+      <>
+        <DedicatedServicePage
+          service={currentRoute.service}
+          onBackToHome={navigateToHome}
+          onSelectGuide={navigateToGuide}
+          onSelectService={navigateToService}
+          onSelectLocation={navigateToLocation}
+        />
+        <FloatingWhatsApp />
+      </>
     );
   }
 
   // Se a rota for uma Cidade/Polo dedicado
   if (currentRoute.type === 'location') {
     return (
-      <DedicatedLocationPage
-        location={currentRoute.location}
-        onBackToHome={navigateToHome}
-        onSelectLocation={navigateToLocation}
-        onSelectService={navigateToService}
-        onSelectGuide={navigateToGuide}
-      />
+      <>
+        <DedicatedLocationPage
+          location={currentRoute.location}
+          onBackToHome={navigateToHome}
+          onSelectLocation={navigateToLocation}
+          onSelectService={navigateToService}
+          onSelectGuide={navigateToGuide}
+        />
+        <FloatingWhatsApp />
+      </>
     );
   }
 
   // Se a rota for um Memorial de Obra dedicado
   if (currentRoute.type === 'project') {
     return (
-      <DedicatedProjectPage
-        project={currentRoute.project}
-        onBackToHome={navigateToHome}
-        onSelectProject={navigateToProject}
-        onSelectService={navigateToService}
-        onSelectGuide={navigateToGuide}
-        onSelectLocation={navigateToLocation}
-      />
+      <>
+        <DedicatedProjectPage
+          project={currentRoute.project}
+          onBackToHome={navigateToHome}
+          onSelectProject={navigateToProject}
+          onSelectService={navigateToService}
+          onSelectGuide={navigateToGuide}
+          onSelectLocation={navigateToLocation}
+        />
+        <FloatingWhatsApp />
+      </>
     );
   }
 
@@ -362,7 +418,7 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
           NAVBAR: Modern, Clean, Impactful Luxury Navigation
          ═══════════════════════════════════════════════════════════════════ */}
       <header className="sticky top-0 z-40 bg-[#0D0C0B]/90 backdrop-blur-md border-b border-white/10 transition-colors pt-[env(safe-area-inset-top,0px)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-18 sm:h-20 flex items-center justify-between gap-3 sm:gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 sm:h-20 flex items-center justify-between gap-3 sm:gap-4">
           {/* Logo Lockup Oficial */}
           <div className="flex-1 flex items-center justify-start">
             <a
@@ -392,6 +448,10 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             </a>
             <a href="#servicos" className="hover:text-white transition-colors">
               13 Serviços
+            </a>
+            <a href="#simulador" className="hover:text-white transition-colors flex items-center gap-1.5 text-[#E8C29E]">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#C89467]" />
+              <span>Simulador</span>
             </a>
             <a href="#obras" className="hover:text-white transition-colors">
               Conceito &amp; Obras
@@ -444,15 +504,22 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             </a>
             <a
               href="#servicos"
-              className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#B8B2A7] hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-all"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#B8B2A7] hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-all"
             >
               13 Serviços
             </a>
             <a
-              href="#obras"
-              className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#B8B2A7] hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-all"
+              href="#simulador"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#E8C29E] bg-[#C89467]/15 border border-[#C89467]/30 hover:bg-[#C89467]/25 transition-all flex items-center gap-1"
             >
-              Conceito &amp; Obras
+              <SlidersHorizontal className="w-3 h-3 text-[#C89467]" />
+              <span>Simulador</span>
+            </a>
+            <a
+              href="#obras"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#B8B2A7] hover:text-white bg-white/[0.03] hover:bg-white/[0.08] border border-white/5 transition-all"
+            >
+              Obras
             </a>
             <a
               href="#artigos"
@@ -515,21 +582,29 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                 Do reparo urgente à obra completa: pintura anti-maresia, elétrica, hidráulica com caça-vazamentos, piscinas, carpintaria, ar-condicionado, obras chave na mão e suporte expresso para Airbnb. Equipe própria, garantia técnica e relatórios digitais no seu celular.
               </p>
 
-              {/* Action Buttons */}
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+              {/* Action Buttons: Alta Conversão & Segmentação */}
+              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4">
+                <a
+                  href="#simulador"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-gradient-to-r from-[#C89467] to-[#A86F3D] hover:from-[#d4a274] hover:to-[#b57a46] text-sm sm:text-base font-bold text-[#0D0C0B] shadow-xl hover:shadow-[#C89467]/20 transition-all cursor-pointer"
+                >
+                  <SlidersHorizontal className="w-4.5 h-4.5" />
+                  <span>Simular Custo da sua Obra</span>
+                </a>
+
                 <a
                   href="#servicos"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-sm sm:text-base font-semibold text-white transition-all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-sm sm:text-base font-semibold text-white transition-all"
                 >
                   <span>Explorar os 13 Serviços</span>
                 </a>
 
                 <a
                   href="#artigos"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#C89467]/15 hover:bg-[#C89467]/25 border border-[#C89467]/40 text-sm sm:text-base font-semibold text-[#E8C29E] transition-all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-sm sm:text-base font-medium text-[#C5BDB1] transition-all"
                 >
                   <BookOpen className="w-4 h-4 text-[#C89467]" />
-                  <span>Ler os 15 Guias Práticos de Obra</span>
+                  <span>15 Guias Técnicos</span>
                 </a>
               </div>
 
@@ -823,6 +898,11 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
             </div>
           </div>
         </section>
+
+        {/* ─── SIMULADOR INTERATIVO DE CUSTOS & PRAZOS (CUB/NBR) ─── */}
+        <div id="simulador">
+          <CostSimulator />
+        </div>
 
         {/* ═══════════════════════════════════════════════════════════════════
             OBRAS & CONCEITO: Visual Showcase in Região dos Lagos
@@ -1130,130 +1210,194 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
                   </p>
                 </div>
 
-                <form onSubmit={handleSendLeadWhatsapp} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {formStatus === 'success' ? (
+                  <div className="p-6 rounded-2xl bg-white/[0.04] border border-[#25D366]/40 text-center space-y-4 animate-in fade-in duration-300">
+                    <div className="w-12 h-12 rounded-full bg-[#25D366]/20 text-[#25D366] mx-auto flex items-center justify-center">
+                      <CheckCircle2 className="w-6 h-6" />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="text-lg font-bold text-white">Solicitação Recebida com Sucesso!</h4>
+                      <p className="text-xs sm:text-sm text-[#A8A29A]">
+                        {formFeedback || 'Seus dados foram gravados. O WhatsApp abrirá em instantes.'}
+                      </p>
+                    </div>
+                    <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                      <a
+                        href={whatsappLink(`Olá, vim pelo site do Grupo Vitti. Meu nome é ${clientName || 'Cliente'} e gostaria de falar sobre ${clientScope} em ${clientCity}.`)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#25D366] text-[#0A2412] font-bold text-sm hover:bg-[#20ba59] transition-all"
+                      >
+                        <WhatsAppIcon className="w-4 h-4 fill-current" />
+                        <span>Abrir WhatsApp Agora</span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormStatus('idle');
+                          setClientMessage('');
+                        }}
+                        className="px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/80 transition-colors"
+                      >
+                        Enviar Outra Mensagem
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSendLeadWhatsapp} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
+                          Seu Nome Completo
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={clientName}
+                          onChange={(e) => setClientName(e.target.value)}
+                          placeholder="Ex.: Marcelo Souza"
+                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#C89467]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
+                          WhatsApp ou Telefone
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          value={clientPhone}
+                          onChange={(e) => setClientPhone(e.target.value)}
+                          placeholder="Ex.: (22) 99843-0000"
+                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#C89467]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
+                          Cidade da Obra ou Serviço
+                        </label>
+                        <select
+                          value={clientCity}
+                          onChange={(e) =>
+                            setClientCity(e.target.value as (typeof CONFIG.cidades)[number])
+                          }
+                          className="w-full px-4 py-3 rounded-xl bg-[#1C1A18] border border-white/10 text-sm text-white focus:outline-none focus:border-[#C89467]"
+                        >
+                          {CONFIG.cidades.map((c) => (
+                            <option key={c} value={c}>
+                              {c} (RJ)
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
+                          Qual serviço você precisa?
+                        </label>
+                        <select
+                          value={clientScope}
+                          onChange={(e) => setClientScope(e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl bg-[#1C1A18] border border-white/10 text-sm text-white focus:outline-none focus:border-[#C89467]"
+                        >
+                          <optgroup label="Reparos &amp; Instalações Rápidas">
+                            <option value="Pintura Especializada & Anti-Maresia">
+                              Pintura Especializada &amp; Proteção Anti-Maresia
+                            </option>
+                            <option value="Hidráulica & Caça-Vazamentos">
+                              Hidráulica &amp; Caça-Vazamentos
+                            </option>
+                            <option value="Elétrica Residencial & Náutica">
+                              Elétrica Residencial &amp; Náutica
+                            </option>
+                            <option value="Instalação & Manutenção de Ar-Condicionado">
+                              Instalação &amp; Manutenção de Ar-Condicionado
+                            </option>
+                            <option value="Ladrilheiro, Porcelanatos & Revestimentos">
+                              Ladrilheiro, Porcelanatos &amp; Revestimentos
+                            </option>
+                            <option value="Carpintaria, Telhados & Decks">
+                              Carpintaria, Telhados &amp; Decks
+                            </option>
+                          </optgroup>
+                          <optgroup label="Manutenção Periódica &amp; Lazer">
+                            <option value="Limpeza & Tratamento de Piscina">
+                              Limpeza &amp; Tratamento de Piscina
+                            </option>
+                            <option value="Jardinagem & Paisagismo Litorâneo">
+                              Jardinagem &amp; Paisagismo Litorâneo
+                            </option>
+                            <option value="Limpeza Geral Pós-Obra & Faxina Técnica">
+                              Limpeza Geral Pós-Obra &amp; Faxina Técnica
+                            </option>
+                          </optgroup>
+                          <optgroup label="Airbnb &amp; Casas de Temporada">
+                            <option value="Gestão de Airbnb & Manutenção Preventiva Expressa">
+                              Gestão de Airbnb &amp; Manutenção Preventiva Expressa
+                            </option>
+                          </optgroup>
+                          <optgroup label="Obras &amp; Reformas">
+                            <option value="Construção Residencial Completa (Chave na Mão)">
+                              Construção Residencial Completa (Chave na Mão)
+                            </option>
+                            <option value="Reforma Geral & Retrofit">
+                              Reforma Geral &amp; Retrofit
+                            </option>
+                            <option value="Acompanhamento Técnico & Vistoria de Obras">
+                              Acompanhamento Técnico &amp; Vistoria de Obras
+                            </option>
+                            <option value="Outro Serviço ou Projeto Especial">
+                              Outro Serviço ou Projeto Especial
+                            </option>
+                          </optgroup>
+                        </select>
+                      </div>
+                    </div>
+
                     <div>
                       <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
-                        Seu Nome Completo
+                        Conte um pouco sobre sua necessidade (opcional)
                       </label>
-                      <input
-                        type="text"
-                        required
-                        value={clientName}
-                        onChange={(e) => setClientName(e.target.value)}
-                        placeholder="Ex.: Marcelo Souza"
+                      <textarea
+                        rows={3}
+                        value={clientMessage}
+                        onChange={(e) => setClientMessage(e.target.value)}
+                        placeholder="Ex.: Preciso de manutenção de piscina e revisão elétrica na minha casa em Búzios..."
                         className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#C89467]"
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
-                        Cidade da Obra ou Serviço
-                      </label>
-                      <select
-                        value={clientCity}
-                        onChange={(e) =>
-                          setClientCity(e.target.value as (typeof CONFIG.cidades)[number])
-                        }
-                        className="w-full px-4 py-3 rounded-xl bg-[#1C1A18] border border-white/10 text-sm text-white focus:outline-none focus:border-[#C89467]"
-                      >
-                        {CONFIG.cidades.map((c) => (
-                          <option key={c} value={c}>
-                            {c} (RJ)
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
-                      Qual serviço ou projeto você precisa?
-                    </label>
-                    <select
-                      value={clientScope}
-                      onChange={(e) => setClientScope(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-[#1C1A18] border border-white/10 text-sm text-white focus:outline-none focus:border-[#C89467]"
+                    <button
+                      type="submit"
+                      disabled={formStatus === 'submitting'}
+                      className="w-full px-5 py-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-[#0A2412] font-bold text-sm sm:text-base transition-all hover:scale-[1.01] shadow-lg flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      <optgroup label="Reparos &amp; Instalações Rápidas">
-                        <option value="Pintura Especializada & Anti-Maresia">
-                          Pintura Especializada &amp; Proteção Anti-Maresia
-                        </option>
-                        <option value="Hidráulica & Caça-Vazamentos">
-                          Hidráulica &amp; Caça-Vazamentos
-                        </option>
-                        <option value="Elétrica Residencial & Náutica">
-                          Elétrica Residencial &amp; Náutica
-                        </option>
-                        <option value="Instalação & Manutenção de Ar-Condicionado">
-                          Instalação &amp; Manutenção de Ar-Condicionado
-                        </option>
-                        <option value="Ladrilheiro, Porcelanatos & Revestimentos">
-                          Ladrilheiro, Porcelanatos &amp; Revestimentos
-                        </option>
-                        <option value="Carpintaria, Telhados & Decks">
-                          Carpintaria, Telhados &amp; Decks
-                        </option>
-                      </optgroup>
-                      <optgroup label="Manutenção Periódica &amp; Lazer">
-                        <option value="Limpeza & Tratamento de Piscina">
-                          Limpeza &amp; Tratamento de Piscina
-                        </option>
-                        <option value="Jardinagem & Paisagismo Litorâneo">
-                          Jardinagem &amp; Paisagismo Litorâneo
-                        </option>
-                        <option value="Limpeza Geral Pós-Obra & Faxina Técnica">
-                          Limpeza Geral Pós-Obra &amp; Faxina Técnica
-                        </option>
-                      </optgroup>
-                      <optgroup label="Airbnb &amp; Casas de Temporada">
-                        <option value="Gestão de Airbnb & Manutenção Preventiva Expressa">
-                          Gestão de Airbnb &amp; Manutenção Preventiva Expressa
-                        </option>
-                      </optgroup>
-                      <optgroup label="Obras &amp; Reformas">
-                        <option value="Construção Residencial Completa (Chave na Mão)">
-                          Construção Residencial Completa (Chave na Mão)
-                        </option>
-                        <option value="Reforma Geral & Retrofit">
-                          Reforma Geral &amp; Retrofit
-                        </option>
-                        <option value="Acompanhamento Técnico & Vistoria de Obras">
-                          Acompanhamento Técnico &amp; Vistoria de Obras
-                        </option>
-                        <option value="Outro Serviço ou Projeto Especial">
-                          Outro Serviço ou Projeto Especial
-                        </option>
-                      </optgroup>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono uppercase text-[#A8A29A] mb-1.5">
-                      Conte um pouco sobre sua ideia (opcional)
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={clientMessage}
-                      onChange={(e) => setClientMessage(e.target.value)}
-                      placeholder="Ex.: Preciso de manutenção de piscina e revisão elétrica na minha casa em Búzios..."
-                      className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#C89467]"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full px-5 py-4 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-[#0A2412] font-bold text-sm sm:text-base transition-all hover:scale-[1.01] shadow-lg flex items-center justify-center gap-2.5 cursor-pointer"
-                  >
-                    <WhatsAppIcon className="w-5 h-5 fill-current shrink-0" />
-                    <span className="flex flex-wrap items-center justify-center gap-x-1.5 leading-snug text-center">
-                      <span>Chamar no WhatsApp</span>
-                      <span className="font-mono text-xs sm:text-sm font-semibold opacity-95 whitespace-nowrap">
-                        {CONFIG.whatsappDisplay}
-                      </span>
-                    </span>
-                  </button>
-                </form>
+                      {formStatus === 'submitting' ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin text-[#0A2412]" />
+                          <span>Gravando e Conectando Engenheiro...</span>
+                        </>
+                      ) : (
+                        <>
+                          <WhatsAppIcon className="w-5 h-5 fill-current shrink-0" />
+                          <span className="flex flex-wrap items-center justify-center gap-x-1.5 leading-snug text-center">
+                            <span>Solicitar Atendimento no WhatsApp</span>
+                            <span className="font-mono text-xs sm:text-sm font-semibold opacity-95 whitespace-nowrap">
+                              {CONFIG.whatsappDisplay}
+                            </span>
+                          </span>
+                        </>
+                      )}
+                    </button>
+                    <div className="text-[11px] text-center text-[#777]">
+                      Garantia de privacidade · Seus dados são enviados diretamente à equipe técnica.
+                    </div>
+                  </form>
+                )}
               </div>
             </div>
           </div>
@@ -1350,6 +1494,9 @@ Gostaria de tirar algumas dúvidas e pedir um orçamento.`;
           />
         )}
       </AnimatePresence>
+
+      {/* Floating High-Converting WhatsApp CTA Button */}
+      <FloatingWhatsApp />
     </div>
   );
 }

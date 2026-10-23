@@ -107,6 +107,7 @@ function buildHomeSemanticHtml(): string {
       <nav style="display:flex;gap:1.5rem;font-size:0.875rem;">
         <a href="#sobre" style="color:#B8B2A7;text-decoration:none;">Sobre Nós</a>
         <a href="#servicos" style="color:#B8B2A7;text-decoration:none;">13 Serviços</a>
+        <a href="#simulador" style="color:#E8C29E;text-decoration:none;font-weight:600;">Simulador de Custos</a>
         <a href="#obras" style="color:#B8B2A7;text-decoration:none;">Conceito &amp; Obras</a>
         <a href="#artigos" style="color:#C89467;text-decoration:none;">15 Guias Práticos</a>
         <a href="#contato" style="color:#B8B2A7;text-decoration:none;">Contato</a>
@@ -127,8 +128,9 @@ function buildHomeSemanticHtml(): string {
         Do reparo urgente à obra completa: pintura anti-maresia, elétrica, hidráulica com caça-vazamentos, piscinas, carpintaria, ar-condicionado, obras chave na mão e suporte expresso para Airbnb. Equipe própria, garantia técnica e atendimento no mesmo dia.
       </p>
       <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-        <a href="#servicos" style="background:#25D366;color:#0A2412;padding:0.875rem 1.75rem;border-radius:0.75rem;font-weight:bold;text-decoration:none;">Ver os 13 Serviços Especializados</a>
-        <a href="#artigos" style="background:rgba(255,255,255,0.05);color:#FFF;border:1px solid rgba(255,255,255,0.15);padding:0.875rem 1.75rem;border-radius:0.75rem;text-decoration:none;">Consultar os 15 Guias Técnicos</a>
+        <a href="#simulador" style="background:#C89467;color:#0D0C0B;padding:0.875rem 1.75rem;border-radius:0.75rem;font-weight:bold;text-decoration:none;">Simular Custo da sua Obra</a>
+        <a href="#servicos" style="background:rgba(255,255,255,0.08);color:#FFF;border:1px solid rgba(255,255,255,0.2);padding:0.875rem 1.75rem;border-radius:0.75rem;font-weight:600;text-decoration:none;">Ver os 13 Serviços Especializados</a>
+        <a href="#artigos" style="background:rgba(255,255,255,0.03);color:#B8B2A7;border:1px solid rgba(255,255,255,0.1);padding:0.875rem 1.75rem;border-radius:0.75rem;text-decoration:none;">Consultar os 15 Guias Técnicos</a>
       </div>
     </section>
 
@@ -166,7 +168,16 @@ function buildHomeSemanticHtml(): string {
       </div>
     </section>
 
-    <section id="sobre" style="padding:4rem 1.5rem;background:#141312;border-top:1px solid rgba(255,255,255,0.1);">
+    <section id="simulador" style="padding:4rem 1.5rem;background:#0D0C0B;border-top:1px solid rgba(255,255,255,0.1);text-align:center;">
+      <div style="max-width:960px;margin:0 auto;">
+        <span style="color:#C89467;font-family:monospace;font-size:0.75rem;font-weight:bold;text-transform:uppercase;">Estimativa Paramétrica CUB/NBR</span>
+        <h2 style="font-size:2rem;font-weight:700;color:#FFF;margin:0.5rem 0;">Simulador de Custo &amp; Prazos de Obra no Litoral</h2>
+        <p style="color:#B8B2A7;margin-bottom:1.5rem;max-width:700px;margin-left:auto;margin-right:auto;">Cálculo paramétrico para construção turnkey, estrutura cinza e retrofit com proteção anti-maresia em Cabo Frio, Búzios e cidades da Região dos Lagos.</p>
+        <a href="${whatsappLink('Olá! Gostaria de validar uma estimativa de custo de obra com o engenheiro do Grupo Vitti.')}" style="background:#25D366;color:#0A2412;padding:0.875rem 1.75rem;border-radius:0.75rem;font-weight:bold;text-decoration:none;display:inline-block;">Validar Simulação no WhatsApp</a>
+      </div>
+    </section>
+
+    <section id="sobre"  style="padding:4rem 1.5rem;background:#141312;border-top:1px solid rgba(255,255,255,0.1);">
       <div style="max-width:1200px;margin:0 auto;">
         <h2 style="font-size:1.875rem;font-weight:700;color:#FFF;margin-bottom:1rem;">Engenharia Costeira e Transparência Radical</h2>
         <p style="color:#B8B2A7;line-height:1.6;margin-bottom:1.5rem;">

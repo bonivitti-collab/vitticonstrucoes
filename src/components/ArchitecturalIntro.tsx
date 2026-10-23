@@ -8,6 +8,7 @@ interface ArchitecturalIntroProps {
 export function shouldSkipIntro(): boolean {
   if (typeof window === 'undefined') return true;
   if (window.location.pathname !== '/') return true;
+  if (window.innerWidth < 768) return true;
   try {
     if (sessionStorage.getItem('vitti_intro_seen') === '1') return true;
   } catch {}
@@ -38,13 +39,13 @@ export const ArchitecturalIntro: React.FC<ArchitecturalIntroProps> = ({ onComple
     // Stage 1: Display logo signature and architectural lines
     const openTimer = setTimeout(() => {
       setPhase('opening');
-    }, 1100);
+    }, 400);
 
     // Stage 2: Curtains finished opening, complete and unmount
     const finishTimer = setTimeout(() => {
       setPhase('finished');
       onComplete?.();
-    }, 1800);
+    }, 850);
 
     return () => {
       clearTimeout(openTimer);
